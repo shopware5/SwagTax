@@ -4,7 +4,7 @@
     <entries>
         <entry>
             <name>Steuern ändern</name>
-            <label lang="en">Tax change</label>
+            <label>Change taxes</label>
             <label lang="de">Steuern ändern</label>
             <controller>SwagTax</controller>
             <action>index</action>

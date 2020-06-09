@@ -57,12 +57,10 @@ Ext.define('Shopware.apps.SwagTax.view.main.Wizard', {
     createBottomBar: function () {
         var me = this;
 
-        // TODO: SNIPPETS
-        // TODO: FIX ARROWS
         return ['->', {
             id: 'card-prev',
             cls: 'secondary',
-            text: '&laquo; Previous',
+            text: '{s name="wizard/prevBtn"}{/s}',
             disabled: true,
             handler: function () {
                 me.fireEvent('previous');
@@ -70,7 +68,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.Wizard', {
         },{
             id: 'card-next',
             cls: 'secondary',
-            text: 'Next &raquo;',
+            text: '{s name="wizard/nextBtn"}{/s}',
             handler: function () {
                 me.fireEvent('next');
             }
@@ -78,7 +76,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.Wizard', {
             id: 'card-save',
             cls: 'primary',
             hidden: true,
-            text: 'Save',
+            text: '{s name="saveBtn"}{/s}',
             handler: function () {
                 me.fireEvent('save');
             }

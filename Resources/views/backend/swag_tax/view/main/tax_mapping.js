@@ -55,8 +55,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
     getComboConfig: function () {
         var config = this.callParent(arguments);
 
-        // TODO: Snippets
-        config.fieldLabel = 'Steuer auswählen';
+        config.fieldLabel = '{s name="tax_mapping/fieldLabel"}{/s}';
         config.margin = '0 0 5 0';
 
         return config;
@@ -87,21 +86,18 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
 
         columns.push({
             dataIndex: 'id',
-            // TODO: Snippets
-            header: 'ID',
+            header: '{s name="tax_mapping/column/id"}{/s}',
         });
 
         columns.push({
             dataIndex: 'name',
-            // TODO: Snippets
-            header: 'Ausgewählte Steuer',
+            header: '{s name="tax_mapping/column/name"}{/s}',
             flex: 1
         });
 
         columns.push({
             dataIndex: 'tax',
-            // TODO: Snippets
-            header: 'Neuer Steuerwert',
+            header: '{s name="tax_mapping/column/tax"}{/s}',
             renderer: this.taxRenderer,
             editor: {
                 xtype: 'numberfield',

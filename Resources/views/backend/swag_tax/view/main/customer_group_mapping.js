@@ -26,6 +26,7 @@
 Ext.define('Shopware.apps.SwagTax.view.main.CustomerGroupMapping', {
 
     extend: 'Shopware.form.field.Grid',
+
     name: 'customerGroupMapping',
     hideHeaders: false,
     allowSorting: false,
@@ -42,8 +43,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.CustomerGroupMapping', {
     getComboConfig: function () {
         var config = this.callParent(arguments);
 
-        // TODO: Snippets
-        config.fieldLabel = 'Kundengruppe auswählen';
+        config.fieldLabel = '{s name="customer_group_mapping/fieldLabel"}{/s}';
         config.margin = '0 0 5 0';
         config.labelStyle = 'margin-top: 0;';
 
@@ -72,15 +72,13 @@ Ext.define('Shopware.apps.SwagTax.view.main.CustomerGroupMapping', {
 
         columns.push({
             dataIndex: 'name',
-            // TODO: Snippets
-            header: 'Kundengruppe',
+            header: '{s name="customer_group_mapping/column/name"}{/s}',
             flex: 1
         });
 
         columns.push({
             dataIndex: 'key',
-            // TODO: Snippets
-            header: 'Kundengruppen Key',
+            header: '{s name="customer_group_mapping/column/key"}{/s}',
             flex: 1
         });
 
