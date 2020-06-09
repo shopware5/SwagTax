@@ -5,12 +5,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagTax\Components\TaxUpdater">
+        <service id="SwagTax\Components\TaxUpdater" class="SwagTax\Components\TaxUpdater">
             <argument type="service" id="dbal_connection" />
             <argument type="service" id="events" />
         </service>
 
-        <service id="SwagTax\Subscriber\CronJobSubscriber">
+        <service id="SwagTax\Subscriber\CronJobSubscriber" class="SwagTax\Subscriber\CronJobSubscriber">
             <argument type="service" id="SwagTax\Components\TaxUpdater"/>
             <argument type="service" id="shopware.cache_manager"/>
             <tag name="shopware.event_subscriber"/>

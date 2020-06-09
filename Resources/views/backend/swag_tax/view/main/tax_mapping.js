@@ -95,7 +95,6 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
             dataIndex: 'name',
             // TODO: Snippets
             header: 'Ausgewählte Steuer',
-            renderer: this.taxNameRenderer,
             flex: 1
         });
 
@@ -114,10 +113,6 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
         columns.push(this.createActionColumn());
 
         return columns;
-    },
-
-    taxNameRenderer: function (value, meta, record) {
-        return value + ' (' + record.get('tax') + '%)';
     },
 
     taxRenderer: function (value) {

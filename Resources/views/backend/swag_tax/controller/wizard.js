@@ -37,6 +37,7 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
         { ref: 'taxMappingCombo', selector: 'swag-tax-wizard #tax-selection' },
         { ref: 'addTaxButton', selector: 'swag-tax-wizard #add-tax-button' },
         { ref: 'taxMappingGrid', selector: 'swag-tax-wizard #mapping-grid' },
+        { ref: 'scheduledDate', selector: 'swag-tax-wizard #scheduled-date' },
     ],
 
     init: function () {
@@ -44,69 +45,63 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
             'swag-tax-wizard': {
                 previous: this.onClickPrevious,
                 next: this.onClickNext,
-                addTax: this.onAddTaxToMapping,
                 changeTax: this.enableAddTaxButton,
                 deleteTax: this.deleteTaxFromMapping,
                 save: this.onSave
             },
+            'swag-tax-fourth-card': {
+                saveDate: this.onSaveDate,
+                execute: this.execute
+            }
         });
 
         this.callParent(arguments);
     },
 
-    onClickPrevious: function() {
+    onClickPrevious: function () {
         this.step(-1);
     },
 
-    onClickNext: function() {
+    onClickNext: function () {
         this.step(1);
     },
 
-    onSave: function() {
-        var values = this.getWizard().getValues();
+    onSave: function () {
+        var me = this,
+            values = this.getWizard().getValues();
 
-        delete values.scheduledDate;
-
-        Ext.Ajax.request({
-            url: '{url action=save}',
-            params: {
-                recalculatePrices: values.recalculatePrices,
-                taxMapping: Ext.JSON.encode(values.taxMapping),
-                customerGroupMapping: Ext.JSON.encode(values.customerGroupMapping),
-            },
-            success: function () {
-                this.step(1);
-            }
+        this.save(values, function () {
+            me.step(1);
         });
     },
 
-    onAddTaxToMapping: function () {
-        var taxCombo = this.getTaxMappingCombo(),
-            taxId = taxCombo.getValue(),
-            taxStore,
-            taxGrid,
-            taxGridStore,
-            selectedTaxRecord;
+    onSaveDate: function () {
+        var values = this.getWizard().getValues();
 
-        if (taxId === null) {
-            return;
-        }
+        this.save(values, function () {
+            //TODO: GROWL
+        });
+    },
 
-        taxStore = taxCombo.getStore();
-        selectedTaxRecord = taxStore.getById(taxId);
+    save: function (values, callback) {
+        Ext.Ajax.request({
+            url: '{url action=save}',
+            params: {
+                recalculatePrices: ~~(values.recalculatePrices),
+                taxMapping: Ext.JSON.encode(values.taxMapping),
+                customerGroupMapping: Ext.JSON.encode(values.customerGroupMapping),
+                scheduledDate: values.scheduledDate,
+            },
+            success: callback
+        });
+    },
 
-        taxGrid = this.getTaxMappingGrid();
-        taxGridStore = taxGrid.getStore();
-
-        // Already in the grid
-        if (taxGridStore.find('taxId', selectedTaxRecord.get('id')) !== -1) {
-            return;
-        }
-
-        taxGridStore.add({
-            taxId: selectedTaxRecord.get('id'),
-            taxName: selectedTaxRecord.get('name'),
-            mappedTaxRate: 0
+    execute: function () {
+        Ext.Ajax.request({
+            url: '{url action=execute}',
+            success: function () {
+                // TODO: GROWL
+            }
         });
     },
 
