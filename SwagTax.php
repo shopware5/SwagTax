@@ -13,6 +13,14 @@ use Shopware\Components\Plugin\Context\UninstallContext;
 
 class SwagTax extends Plugin
 {
+    public static function getSubscribedEvents()
+    {
+        return [
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_SwagTax' => 'registerSwagTaxController',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_SwagTax' => 'initController'
+        ];
+    }
+
     public function install(InstallContext $context)
     {
         $this->container->get('dbal_connection')->executeQuery('CREATE TABLE `swag_tax_config` (
@@ -60,5 +68,17 @@ class SwagTax extends Plugin
         $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
             'Shopware_CronJob_SwagTax'
         ]);
+    }
+
+    public function initController(\Enlight_Event_EventArgs $args)
+    {
+        /** @var \Shopware_Controllers_Backend_SwagTax $subject */
+        $subject = $args->getSubject();
+        $subject->View()->addTemplateDir($this->getPath() . '/Resources/views/');
+    }
+
+    public function registerSwagTaxController(\Enlight_Event_EventArgs $args)
+    {
+        return $this->getPath() . '/Controllers/Backend/SwagTax.php';
     }
 }
