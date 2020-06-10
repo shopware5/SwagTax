@@ -69,11 +69,11 @@ class TaxUpdater
     private function getConfig($cronJobMode)
     {
         $config = $this->connection->fetchAssoc('SELECT * FROM swag_tax_config WHERE active = 1 LIMIT 1');
-        if ($config === null) {
+        if ($config === false) {
             return null;
         }
 
-        if ($cronJobMode && time() < strtotime($config['customer_group_mapping'])) {
+        if ($cronJobMode && time() < strtotime($config['scheduled_date'])) {
             return null;
         }
 
