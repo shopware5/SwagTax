@@ -40,6 +40,32 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
         this.callParent(arguments);
     },
 
+    setValue: function(value) {
+        var me = this,
+            currentRecord,
+            currentRecordIndex;
+
+        me.store.removeAll();
+
+        if (!value) {
+            return;
+        }
+
+        me.searchStore.load(function () {
+            Ext.Object.each(value, function (key, value) {
+                currentRecordIndex = me.searchStore.findExact('id', ~~(key));
+
+                if (currentRecordIndex === -1) {
+                    return;
+                }
+
+                currentRecord = me.searchStore.getAt(currentRecordIndex);
+                currentRecord.set('tax', value);
+                me.store.add(currentRecord);
+            });
+        });
+    },
+
     getValue: function () {
         var me = this,
             recordData = {},

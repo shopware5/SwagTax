@@ -28,6 +28,23 @@ Ext.define('Shopware.apps.SwagTax.controller.Main', {
     extend: 'Enlight.app.Controller',
 
     init: function () {
+        var me = this;
+
+        Ext.Ajax.request({
+            url: '{url action=loadConfig}',
+            success: function (response) {
+                var operation = Ext.decode(response.responseText);
+                operation.data.customerGroupMapping = Ext.JSON.decode(operation.data.customerGroupMapping);
+                operation.data.taxMapping = Ext.JSON.decode(operation.data.taxMapping);
+
+                if (operation.data.scheduledDate === '0000-00-00 00:00:00') {
+                    delete operation.data.scheduledDate;
+                }
+
+                me.mainWindow.setData(operation.data);
+            }
+        });
+
         this.mainWindow = this.getView('main.Window').create().show();
         this.callParent(arguments);
     },

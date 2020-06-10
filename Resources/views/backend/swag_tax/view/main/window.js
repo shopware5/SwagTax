@@ -34,10 +34,17 @@ Ext.define('Shopware.apps.SwagTax.view.main.Window', {
 
     title: '{s name="title"}{/s}',
 
+    wizard: null,
+
     initComponent: function () {
-        this.items = Ext.create('Shopware.apps.SwagTax.view.main.Wizard');
+        this.wizard = Ext.create('Shopware.apps.SwagTax.view.main.Wizard');
+        this.items = this.wizard;
 
         this.callParent(arguments);
+    },
+
+    setData: function (data) {
+        this.wizard.getForm().setValues(data);
     }
 });
 //{/block}
