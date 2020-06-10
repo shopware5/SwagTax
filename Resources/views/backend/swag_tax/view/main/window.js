@@ -32,8 +32,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.Window', {
 
     layout: 'border',
 
-    // TODO: Snippets
-    title: 'Steuern ändern',
+    title: '{s name="title"}{/s}',
 
     initComponent: function () {
         this.items = Ext.create('Shopware.apps.SwagTax.view.main.Wizard');

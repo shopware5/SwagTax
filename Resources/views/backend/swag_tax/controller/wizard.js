@@ -79,7 +79,10 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
         var values = this.getWizard().getValues();
 
         this.save(values, function () {
-            //TODO: GROWL
+            Shopware.Notification.createGrowlMessage(
+                '{s name="wizard/growl/schedule/title"}{/s}',
+                '{s name="wizard/growl/schedule/message"}{/s}'
+            );
         });
     },
 
@@ -100,7 +103,10 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
         Ext.Ajax.request({
             url: '{url action=execute}',
             success: function () {
-                // TODO: GROWL
+                Shopware.Notification.createGrowlMessage(
+                    '{s name="wizard/growl/execute/title"}{/s}',
+                    '{s name="wizard/growl/execute/message"}{/s}'
+                );
             }
         });
     },

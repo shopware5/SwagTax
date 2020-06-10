@@ -26,21 +26,21 @@
 Ext.define('Shopware.apps.SwagTax.view.steps.FourthCard', {
 
     extend: 'Ext.container.Container',
+
     id: 'card-3',
     alias: 'widget.swag-tax-fourth-card',
 
-    // TODO: SNIPPETS
     initComponent: function () {
         var me = this;
 
         this.items = [
             {
                 xtype: 'fieldset',
-                title: 'Direkt ausführen',
+                title: '{s name="fourth_card/execute/title"}{/s}',
                 items:  {
                     xtype: 'button',
                     cls: 'primary',
-                    text: 'Jetzt ausführen (Batch Mode)',
+                    text: '{s name="fourth_card/execute/btn"}{/s}',
                     handler: function () {
                         me.fireEvent('execute');
                     }
@@ -49,7 +49,7 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FourthCard', {
             {
                 xtype: 'fieldset',
                 layout: 'anchor',
-                title: 'Planen',
+                title: '{s name="fourth_card/schedule/title"}{/s}',
                 items: [
                     {
                         xtype: 'base-element-datetime',
@@ -62,7 +62,7 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FourthCard', {
                     {
                         xtype: 'button',
                         cls: 'primary',
-                        text: 'Speichern',
+                        text: '{s name="saveBtn"}{/s}',
                         handler: function () {
                             me.fireEvent('saveDate');
                         }

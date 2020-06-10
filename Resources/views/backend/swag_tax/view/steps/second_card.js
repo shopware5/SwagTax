@@ -29,50 +29,10 @@ Ext.define('Shopware.apps.SwagTax.view.steps.SecondCard', {
     id: 'card-1',
     layout: 'fit',
 
-    // TODO: SNIPPETS
     initComponent: function () {
         this.items = Ext.create('Shopware.apps.SwagTax.view.main.TaxMapping');
 
         this.callParent(arguments);
-    },
-
-    createColumns: function () {
-        var me = this;
-
-        // TODO: SNIPPETS
-        return [
-            {
-                header: 'id',
-                dataIndex: 'taxId',
-                hidden: true
-            },{
-                header: 'Ausgewählte Steuer',
-                dataIndex: 'taxName',
-                flex: 1
-            }, {
-                header: 'Neuer Steuersatz',
-                dataIndex: 'mappedTaxRate',
-                flex: 1,
-                editor: {
-                    xtype: 'numberfield',
-                    minValue: 0
-                },
-                renderer: this.renderTaxRate
-            },
-            {
-                xtype: 'actioncolumn',
-                width: 80,
-                items: [
-                    {
-                        iconCls: 'sprite-minus-circle',
-                        action: 'deleteTax',
-                        handler: function (view, rowIndex) {
-                            me.fireEvent('deleteTax', rowIndex);
-                        }
-                    },
-                ]
-            }
-        ];
     },
 
     renderTaxRate: function (value) {
