@@ -21,6 +21,23 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
         ]);
     }
 
+    public function loadConfigAction()
+    {
+        $sql = <<<SQL
+            SELECT
+               `active`,
+               `recalculate_prices` as recalculatePrices,
+               `tax_mapping` as taxMapping,
+               `customer_group_mapping` as customerGroupMapping,
+               `scheduled_date` as scheduledDate
+            FROM %s
+SQL;
+
+        $this->View()->assign([
+            'data' => $this->container->get('dbal_connection')->fetchAssoc(sprintf($sql, self::TABLE_NAME))
+        ]);
+    }
+
     public function executeAction()
     {
         $this->container->get(TaxUpdater::class)->update();
