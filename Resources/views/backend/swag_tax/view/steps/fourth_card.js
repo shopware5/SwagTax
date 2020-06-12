@@ -35,6 +35,11 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FourthCard', {
 
         this.items = [
             {
+                xtype: 'container',
+                html: '{s name="fourth_card/text"}{/s}',
+                height: 90
+            },
+            {
                 xtype: 'fieldset',
                 title: '{s name="fourth_card/execute/title"}{/s}',
                 items:  {

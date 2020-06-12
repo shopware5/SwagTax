@@ -26,10 +26,21 @@
 Ext.define('Shopware.apps.SwagTax.view.steps.ThirdCard', {
     extend: 'Ext.container.Container',
     id: 'card-2',
-    layout: 'fit',
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start',
+    },
 
     initComponent: function () {
-        this.items = Ext.create('Shopware.apps.SwagTax.view.main.CustomerGroupMapping');
+        this.items = [
+            {
+                xtype: 'container',
+                html: '{s name="customer_group_mapping/text"}{/s}',
+                height: 85
+            },
+            Ext.create('Shopware.apps.SwagTax.view.main.CustomerGroupMapping')
+        ];
 
         this.callParent(arguments);
     }

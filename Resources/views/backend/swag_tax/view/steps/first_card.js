@@ -32,8 +32,7 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
         this.items = [
             {
                 xtype: 'container',
-                // TODO: Replace with real text
-                html: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.'
+                html: '{s name="first_card/text"}{/s}'
             },
             {
                 xtype: 'checkbox',
