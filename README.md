@@ -22,25 +22,24 @@ The user can
 
 ## Extension
 
-When you want to react to in your plugin to the tax change. You can subscribe to the event `Swag_Tax_Updated_TaxRate`. The given options looks like this:
+When you want to react to in your plugin to the tax change. You can subscribe to the event `Swag_Tax_Updated_TaxRate`. This event will be fired on any single tax change. The given options looks like this:
 
 ```php
 [
-  'config' => 
-  [
+  'config' => [ // The user configuration in the module
     'id' => '1',
     'active' => '1',
-    'recalculate_prices' => true,
+    'recalculate_prices' => true, // Should the prices be recalculated to the gross price?
     'tax_mapping' => [ // key => oldTaxId, value => new taxRate
       1 => 15,
     ],
-    'customer_group_mapping' => [
+    'customer_group_mapping' => [ // List of customer groups where the price should be recalcuated
       'EK',
     ],
-    'planned_at' => '2020-06-06 13:59:07',
+    'scheduled_date' => '2020-06-06 13:59:07',
   ],
-  'newTaxId' => 7,
-  'newTaxRate' => 15,
+  'newTaxId' => 7, // New created tax id
+  'newTaxRate' => 15, // New tax rate
 ]
 ```
 
