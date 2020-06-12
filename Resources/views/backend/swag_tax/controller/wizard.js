@@ -107,6 +107,19 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
                     '{s name="wizard/growl/execute/title"}{/s}',
                     '{s name="wizard/growl/execute/message"}{/s}'
                 );
+                Ext.Ajax.request({
+                    url: '{url controller=Cache action=clearCache}',
+                    params: {
+                        'cache[config]': 'on',
+                        'cache[http]': 'on'
+                    },
+                    success: function () {
+                        Shopware.Notification.createGrowlMessage(
+                            '{s name="wizard/growl/cache/title"}{/s}',
+                            '{s name="wizard/growl/cache/message"}{/s}'
+                        );
+                    }
+                })
             }
         });
     },
