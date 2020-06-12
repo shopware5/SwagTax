@@ -29,7 +29,7 @@ When you want to react to in your plugin to the tax change. You can subscribe to
   'config' => [ // The user configuration in the module
     'id' => '1',
     'active' => '1',
-    'recalculate_prices' => true, // Should the prices recalculated to the gross price?
+    'recalculate_prices' => true, // Should the prices be recalculated to the gross price?
     'tax_mapping' => [ // key => oldTaxId, value => new taxRate
       1 => 15,
     ],
