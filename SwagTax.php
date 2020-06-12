@@ -33,12 +33,15 @@ class SwagTax extends Plugin
 ');
 
         $this->addCron();
+        $this->container->get('acl')->createResource('swagtax', ['read']);
     }
 
     public function uninstall(UninstallContext $context)
     {
         $this->container->get('dbal_connection')->executeUpdate('DROP TABLE IF EXISTS swag_tax_config');
         $this->removeCron();
+
+        $this->container->get('acl')->deleteResource('swagtax');
     }
 
     public function addCron()
