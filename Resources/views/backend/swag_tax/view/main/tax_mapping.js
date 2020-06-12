@@ -28,6 +28,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
     extend: 'Shopware.form.field.Grid',
     name: 'taxMapping',
     hideHeaders: false,
+    flex: 2,
 
     allowSorting: false,
 

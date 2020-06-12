@@ -30,6 +30,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.CustomerGroupMapping', {
     name: 'customerGroupMapping',
     hideHeaders: false,
     allowSorting: false,
+    flex: 2,
 
     initComponent: function () {
         this.searchStore = Ext.create('Shopware.apps.Base.store.CustomerGroup');
