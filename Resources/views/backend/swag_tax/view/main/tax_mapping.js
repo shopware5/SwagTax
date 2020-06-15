@@ -83,7 +83,8 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
         var config = this.callParent(arguments);
 
         config.fieldLabel = '{s name="tax_mapping/fieldLabel"}{/s}';
-        config.margin = '0 0 5 0';
+        config.margin = '15 0 5 0';
+        config.labelStyle = 'margin-top: 0;';
 
         return config;
     },

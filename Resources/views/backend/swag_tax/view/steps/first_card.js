@@ -31,15 +31,31 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
     initComponent: function () {
         this.items = [
             {
-                xtype: 'container',
-                html: '{s name="first_card/text"}{/s}'
+                xtype: 'fieldset',
+                title: '{s name="wizard/information_panel/title"}{/s}',
+                items: [
+                    {
+                        xtype: 'container',
+                        html: '{s name="first_card/text"}{/s}',
+                    }
+                ],
+                style: {
+                    marginBottom: '15px'
+                }
             },
             {
-                xtype: 'checkbox',
-                fieldLabel: '{s name="first_card/recalculatePrices"}{/s}',
-                name: 'recalculatePrices',
-                inputValue: true,
-                uncheckedValue: false
+                xtype: 'fieldset',
+                title: '{s name="wizard/information_panel/settings"}{/s}',
+                items: [
+                    {
+                        xtype: 'checkbox',
+                        fieldLabel: '{s name="first_card/recalculatePrices"}{/s}',
+                        name: 'recalculatePrices',
+                        inputValue: true,
+                        uncheckedValue: false,
+                        labelStyle: 'margin-top: 0;'
+                    }
+                ]
             }
         ];
 
