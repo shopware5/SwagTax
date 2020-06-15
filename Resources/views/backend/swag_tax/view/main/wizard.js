@@ -28,6 +28,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.Wizard', {
     extend: 'Ext.form.Panel',
 
     alias: 'widget.swag-tax-wizard',
+    cls: 'shopware-form',
 
     layout: 'card',
     region: 'center',

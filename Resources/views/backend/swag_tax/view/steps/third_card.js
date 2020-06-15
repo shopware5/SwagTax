@@ -35,9 +35,15 @@ Ext.define('Shopware.apps.SwagTax.view.steps.ThirdCard', {
     initComponent: function () {
         this.items = [
             {
-                xtype: 'container',
-                html: '{s name="customer_group_mapping/text"}{/s}',
-                height: 85
+                xtype: 'fieldset',
+                title: '{s name="wizard/information_panel/title"}{/s}',
+                items: [
+                    {
+                        xtype: 'container',
+                        html: '{s name="customer_group_mapping/text"}{/s}',
+                        height: 85
+                    },
+                ],
             },
             Ext.create('Shopware.apps.SwagTax.view.main.CustomerGroupMapping')
         ];

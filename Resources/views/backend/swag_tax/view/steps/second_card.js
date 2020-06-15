@@ -36,10 +36,17 @@ Ext.define('Shopware.apps.SwagTax.view.steps.SecondCard', {
     initComponent: function () {
         this.items = [
             {
-                xtype: 'container',
-                html: '{s name="tax_mapping/text"}{/s}',
-                height: 85
+                xtype: 'fieldset',
+                title: '{s name="wizard/information_panel/title"}{/s}',
+                items: [
+                    {
+                        xtype: 'container',
+                        html: '{s name="tax_mapping/text"}{/s}',
+                        height: 85
+                    },
+                ],
             },
+
             Ext.create('Shopware.apps.SwagTax.view.main.TaxMapping')
         ];
 
