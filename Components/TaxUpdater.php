@@ -45,10 +45,14 @@ class TaxUpdater
             $newTaxId = (int) $this->connection->lastInsertId();
             $this->copyTaxRules($oldTaxId, $newTaxId);
 
+            if (!$config['recalculate_prices']) {
+                $this->recalculateShippingCosts($oldTaxId, $newTaxRate);
+            }
+
             $this->updateTaxIds($oldTaxId, $newTaxId);
 
             if ($config['recalculate_prices']) {
-                $this->recalculatePrices($oldTaxId, $newTaxRate, $newTaxId, $config['customer_group_mapping']);
+                $this->recalculateProductPrices($oldTaxId, $newTaxRate, $newTaxId, $config['customer_group_mapping']);
             }
 
             $this->eventManager->notify('Swag_Tax_Updated_TaxRate', [
@@ -96,7 +100,7 @@ class TaxUpdater
         }
     }
 
-    private function recalculatePrices($oldTaxId, $newTaxRate, $newTaxId, $customer_group_mapping)
+    private function recalculateProductPrices($oldTaxId, $newTaxRate, $newTaxId, $customer_group_mapping)
     {
         $oldTaxRate = $this->connection->fetchColumn('SELECT tax FROM s_core_tax WHERE id = ?', [$oldTaxId]);
 
@@ -106,10 +110,32 @@ class TaxUpdater
             ->where('prices.pricegroup IN (:groups)')
             ->andWhere('(SELECT taxID FROM s_articles WHERE id = prices.articleID) = :newTaxID');
 
-        $qb->setParameter('groups', $customer_group_mapping, Connection::PARAM_STR_ARRAY);
-        $qb->setParameter('newTaxID', $newTaxId);
+        $qb->setParameter(':groups', $customer_group_mapping, Connection::PARAM_STR_ARRAY);
+        $qb->setParameter(':newTaxID', $newTaxId);
 
         $qb->execute();
+    }
+
+    private function recalculateShippingCosts($oldTaxId, $newTaxRate)
+    {
+        $oldTaxRate = $this->connection->fetchColumn('SELECT tax FROM s_core_tax WHERE id = ?', [$oldTaxId]);
+
+        $affectedQueryBuilder = $this->connection->createQueryBuilder();
+        $affectedQueryBuilder->select('id')
+            ->from('s_premium_dispatch', 'dispatch')
+            ->where('tax_calculation = :oldTaxId')
+            ->setParameter(':oldTaxId', $oldTaxId);
+
+        $affectedDispatchIds = $affectedQueryBuilder->execute()->fetchAll(\PDO::FETCH_COLUMN);
+
+        $recalculatePricesQueryBuilder = $this->connection->createQueryBuilder();
+        $recalculatePricesQueryBuilder->update('s_premium_shippingcosts', 'shippingCosts')
+            ->set('value', sprintf('value / %s*%s', 1 + ($oldTaxRate / 100), 1 + ($newTaxRate / 100)))
+            ->where('shippingCosts.dispatchID IN (:dispatchIds)');
+
+        $recalculatePricesQueryBuilder->setParameter(':dispatchIds', $affectedDispatchIds, Connection::PARAM_INT_ARRAY);
+
+        $recalculatePricesQueryBuilder->execute();
     }
 
     private function updateTaxIds($oldTaxId, $newTaxId)
