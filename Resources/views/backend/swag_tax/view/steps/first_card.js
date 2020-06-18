@@ -50,6 +50,7 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
                     {
                         xtype: 'checkbox',
                         fieldLabel: '{s name="first_card/recalculatePrices"}{/s}',
+                        supportText: '{s name="first_card/recalculatePrices/support"}{/s}',
                         name: 'recalculatePrices',
                         inputValue: true,
                         uncheckedValue: false,

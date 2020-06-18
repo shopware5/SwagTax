@@ -103,7 +103,7 @@ class TaxUpdater
         $qb = $this->connection->createQueryBuilder();
         $qb->update('s_articles_prices', 'prices')
             ->set('price', sprintf('price/%s*%s', 1 + ($newTaxRate / 100), 1 + ($oldTaxRate / 100)))
-            ->where('prices.pricegroup = :groups')
+            ->where('prices.pricegroup IN (:groups)')
             ->andWhere('(SELECT taxID FROM s_articles WHERE id = prices.articleID) = :newTaxID');
 
         $qb->setParameter('groups', $customer_group_mapping, Connection::PARAM_STR_ARRAY);
