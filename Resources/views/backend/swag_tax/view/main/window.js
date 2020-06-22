@@ -24,16 +24,11 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/view/main"}
 Ext.define('Shopware.apps.SwagTax.view.main.Window', {
-
     extend: 'Enlight.app.Window',
-
     height: 500,
     width: 1000,
-
     layout: 'border',
-
     title: '{s name="title"}{/s}',
-
     wizard: null,
 
     initComponent: function () {

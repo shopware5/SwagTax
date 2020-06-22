@@ -26,18 +26,14 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/controller/wizard"}
 Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
-
     extend: 'Enlight.app.Controller',
 
     refs: [
         { ref: 'wizard', selector: 'swag-tax-wizard' },
-        { ref: 'prevBtn', selector: 'swag-tax-wizard #card-prev' },
-        { ref: 'nextBtn', selector: 'swag-tax-wizard #card-next' },
-        { ref: 'saveBtn', selector: 'swag-tax-wizard #card-save' },
-        { ref: 'taxMappingCombo', selector: 'swag-tax-wizard #tax-selection' },
-        { ref: 'addTaxButton', selector: 'swag-tax-wizard #add-tax-button' },
-        { ref: 'taxMappingGrid', selector: 'swag-tax-wizard #mapping-grid' },
-        { ref: 'scheduledDate', selector: 'swag-tax-wizard #scheduled-date' },
+        { ref: 'prevBtn', selector: 'swag-tax-wizard [swId="card-prev"]' },
+        { ref: 'nextBtn', selector: 'swag-tax-wizard [swId="card-next"]' },
+        { ref: 'saveBtn', selector: 'swag-tax-wizard [swId="card-save"]' },
+        { ref: 'scheduledDate', selector: 'swag-tax-wizard [swId="scheduled-date"]' },
     ],
 
     init: function () {
@@ -124,21 +120,13 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
         });
     },
 
-    enableAddTaxButton: function () {
-        this.getAddTaxButton().setDisabled(false);
-    },
-
-    deleteTaxFromMapping: function (rowIndex) {
-        this.getTaxMappingGrid().getStore().removeAt(rowIndex);
-    },
-
     /**
      * @param { number } step
      */
     step: function (step) {
         var wizard = this.getWizard(),
             layout = wizard.getLayout(),
-            index = layout.getActiveItem().id.split('card-')[1],
+            index = layout.getActiveItem().swId.split('card-')[1],
             next = parseInt(index, 10) + step;
 
         if (next === wizard.items.length - 1) {

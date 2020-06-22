@@ -24,7 +24,6 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/view/main/tax_mapping"}
 Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
-
     extend: 'Shopware.form.field.Grid',
     name: 'taxMapping',
     hideHeaders: false,

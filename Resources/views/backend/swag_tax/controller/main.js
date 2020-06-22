@@ -24,7 +24,6 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/controller/main"}
 Ext.define('Shopware.apps.SwagTax.controller.Main', {
-
     extend: 'Enlight.app.Controller',
 
     init: function () {

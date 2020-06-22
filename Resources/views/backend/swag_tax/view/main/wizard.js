@@ -24,19 +24,14 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/view/wizard"}
 Ext.define('Shopware.apps.SwagTax.view.main.Wizard', {
-
     extend: 'Ext.form.Panel',
-
     alias: 'widget.swag-tax-wizard',
     cls: 'shopware-form',
 
     layout: 'card',
     region: 'center',
-
     bodyPadding: '20px',
-
     activeItem: 0,
-
     style: 'background: #fff',
 
     initComponent: function () {
@@ -59,22 +54,22 @@ Ext.define('Shopware.apps.SwagTax.view.main.Wizard', {
         var me = this;
 
         return ['->', {
-            id: 'card-prev',
-            cls: 'secondary',
+            swId: 'card-prev',
+            cls: 'secondary card-prev',
             text: '{s name="wizard/prevBtn"}{/s}',
             disabled: true,
             handler: function () {
                 me.fireEvent('previous');
             }
         },{
-            id: 'card-next',
+            swId: 'card-next',
             cls: 'secondary',
             text: '{s name="wizard/nextBtn"}{/s}',
             handler: function () {
                 me.fireEvent('next');
             }
         },{
-            id: 'card-save',
+            swId: 'card-save',
             cls: 'primary',
             hidden: true,
             text: '{s name="saveBtn"}{/s}',

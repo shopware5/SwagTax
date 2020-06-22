@@ -24,10 +24,8 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/view/steps/fourth_card"}
 Ext.define('Shopware.apps.SwagTax.view.steps.FourthCard', {
-
     extend: 'Ext.container.Container',
-
-    id: 'card-3',
+    swId: 'card-3',
     alias: 'widget.swag-tax-fourth-card',
 
     initComponent: function () {
@@ -63,7 +61,7 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FourthCard', {
                 items: [
                     {
                         xtype: 'base-element-datetime',
-                        id: 'scheduled-date',
+                        swId: 'scheduled-date',
                         timeCfg: { format: 'H:i:s' },
                         dateCfg: { format: 'Y-m-d' },
                         name: 'scheduledDate',

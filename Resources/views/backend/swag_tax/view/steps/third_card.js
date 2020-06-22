@@ -25,7 +25,7 @@
 //{block name="backend/swag_tax/view/steps/third_card"}
 Ext.define('Shopware.apps.SwagTax.view.steps.ThirdCard', {
     extend: 'Ext.container.Container',
-    id: 'card-2',
+    swId: 'card-2',
     layout: {
         type: 'vbox',
         align : 'stretch',

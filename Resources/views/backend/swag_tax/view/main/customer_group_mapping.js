@@ -24,9 +24,7 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/view/main/customer_group_mapping"}
 Ext.define('Shopware.apps.SwagTax.view.main.CustomerGroupMapping', {
-
     extend: 'Shopware.form.field.Grid',
-
     name: 'customerGroupMapping',
     hideHeaders: false,
     allowSorting: false,

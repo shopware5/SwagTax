@@ -24,9 +24,8 @@
 //{namespace name=backend/swag_tax/main}
 //{block name="backend/swag_tax/view/steps/first_card"}
 Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
-
     extend: 'Ext.container.Container',
-    id: 'card-0',
+    swId: 'card-0',
 
     initComponent: function () {
         this.items = [
