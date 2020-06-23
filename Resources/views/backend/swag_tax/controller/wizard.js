@@ -34,6 +34,7 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
         { ref: 'nextBtn', selector: 'swag-tax-wizard [swId="card-next"]' },
         { ref: 'saveBtn', selector: 'swag-tax-wizard [swId="card-save"]' },
         { ref: 'scheduledDate', selector: 'swag-tax-wizard [swId="scheduled-date"]' },
+        { ref: 'customerGroupMapping', selector: 'swag-tax-wizard [name="customerGroupMapping"]' },
     ],
 
     init: function () {
@@ -48,6 +49,10 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
             'swag-tax-fourth-card': {
                 saveDate: this.onSaveDate,
                 execute: this.execute
+            },
+            'swag-tax-customer-group-mapping': {
+                itemAdded: this.checkSaveButton,
+                itemRemoved: this.checkSaveButton
             }
         });
 
@@ -80,6 +85,10 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
                 '{s name="wizard/growl/schedule/message"}{/s}'
             );
         });
+    },
+
+    checkSaveButton: function () {
+        this.getSaveBtn().setDisabled(this.getCustomerGroupMapping().getValue() <= 0);
     },
 
     save: function (values, callback) {
@@ -132,6 +141,10 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
         if (next === wizard.items.length - 1) {
             this.getSaveBtn().hide();
         } else if (next === wizard.items.length - 2) {
+            if (this.getCustomerGroupMapping().getValue().length <= 0) {
+                this.getSaveBtn().disable();
+            }
+
             this.getSaveBtn().show();
             this.getNextBtn().hide();
         } else if (next === wizard.items.length - 3) {

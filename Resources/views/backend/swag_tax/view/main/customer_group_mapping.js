@@ -29,6 +29,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.CustomerGroupMapping', {
     hideHeaders: false,
     allowSorting: false,
     flex: 2,
+    alias: 'widget.swag-tax-customer-group-mapping',
 
     initComponent: function () {
         this.searchStore = Ext.create('Shopware.apps.Base.store.CustomerGroup');
@@ -107,6 +108,22 @@ Ext.define('Shopware.apps.SwagTax.view.main.CustomerGroupMapping', {
         columns.push(me.createActionColumn());
 
         return columns;
+    },
+
+    addItem: function(record) {
+        var newlyAdded = this.callParent(arguments);
+
+        if (newlyAdded) {
+            this.fireEvent('itemAdded');
+        }
+
+        return newlyAdded;
+    },
+
+    removeItem: function(record) {
+        this.callParent(arguments);
+
+        this.fireEvent('itemRemoved');
     },
 });
 //{/block}
