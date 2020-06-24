@@ -1,9 +1,5 @@
 # SwagTax
 
-## WIP
-
-**This plugin is currently in development!**
-
 ## What does this plugin do?
 
 This plugin adds a new wizard to the Shopware backend, which allows easily changing the tax rate to another.
