@@ -20,8 +20,8 @@
         <changes lang="de">Initial version</changes>
     </changelog>
 
-<changelog version="1.0.1">
-    <changes lang="en">Fixed meta tags in plugin.xml</changes>
-    <changes lang="de">Meta Tags in Plugin.xml angepasst</changes>
-</changelog>
+    <changelog version="1.0.1">
+        <changes lang="en">Fixed meta tags in plugin.xml</changes>
+        <changes lang="de">Meta Tags in plugin.xml angepasst</changes>
+    </changelog>
 </plugin>
