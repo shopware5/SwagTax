@@ -5,15 +5,23 @@
     <label lang="de">Steuern ändern</label>
     <label lang="en">Change taxes</label>
 
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <copyright>(c) by shopware AG</copyright>
-    <license>MIT</license>
+    <license>proprietary</license>
     <link>http://store.shopware.com</link>
     <author>shopware AG</author>
+
+    <description>Temporary VAT reduction from 01 July to 31 December. The VAT in Germany will be reduced from 19 to 16 and from 7 to 5 %.</description>
+    <description lang="de">Befristete MwSt.-Senkung vom 01. Juli bis zum 31. Dezember wird die MwSt. in Deutschland von 19 auf 16 sowie von 7 auf 5 % gesenkt.</description>
 
     <compatibility minVersion="5.2.0"/>
     <changelog version="1.0.0">
         <changes lang="en">Initial version</changes>
         <changes lang="de">Initial version</changes>
     </changelog>
+
+<changelog version="1.0.1">
+    <changes lang="en">Fixed meta tags in plugin.xml</changes>
+    <changes lang="de">Meta Tags in Plugin.xml angepasst</changes>
+</changelog>
 </plugin>
