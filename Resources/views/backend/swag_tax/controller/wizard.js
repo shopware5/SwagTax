@@ -42,8 +42,6 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
             'swag-tax-wizard': {
                 previous: this.onClickPrevious,
                 next: this.onClickNext,
-                changeTax: this.enableAddTaxButton,
-                deleteTax: this.deleteTaxFromMapping,
                 save: this.onSave
             },
             'swag-tax-fourth-card': {
@@ -105,28 +103,34 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
     },
 
     execute: function () {
-        Ext.Ajax.request({
-            url: '{url action=execute}',
-            success: function () {
-                Shopware.Notification.createGrowlMessage(
-                    '{s name="wizard/growl/execute/title"}{/s}',
-                    '{s name="wizard/growl/execute/message"}{/s}'
-                );
-                Ext.Ajax.request({
-                    url: '{url controller=Cache action=clearCache}',
-                    params: {
-                        'cache[config]': 'on',
-                        'cache[http]': 'on'
-                    },
-                    success: function () {
-                        Shopware.Notification.createGrowlMessage(
-                            '{s name="wizard/growl/cache/title"}{/s}',
-                            '{s name="wizard/growl/cache/message"}{/s}'
-                        );
-                    }
-                })
+        Ext.MessageBox.confirm('{s name="fourth_card/confirm/title"}{/s}', '{s name="fourth_card/confirm/message"}{/s}', function (answer) {
+            if (answer !== 'yes') {
+                return;
             }
-        });
+
+            Ext.Ajax.request({
+                url: '{url action=execute}',
+                success: function () {
+                    Shopware.Notification.createGrowlMessage(
+                        '{s name="wizard/growl/execute/title"}{/s}',
+                        '{s name="wizard/growl/execute/message"}{/s}'
+                    );
+                    Ext.Ajax.request({
+                        url: '{url controller=Cache action=clearCache}',
+                        params: {
+                            'cache[config]': 'on',
+                            'cache[http]': 'on'
+                        },
+                        success: function () {
+                            Shopware.Notification.createGrowlMessage(
+                                '{s name="wizard/growl/cache/title"}{/s}',
+                                '{s name="wizard/growl/cache/message"}{/s}'
+                            );
+                        }
+                    })
+                }
+            });
+        })
     },
 
     /**

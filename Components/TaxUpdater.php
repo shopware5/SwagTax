@@ -77,6 +77,14 @@ class TaxUpdater
             return null;
         }
 
+        if (empty($config['scheduled_date']) || $config['scheduled_date'] === '0000-00-00 00:00:00') {
+            $config['scheduled_date'] = null;
+
+            if ($cronJobMode) {
+                return null;
+            }
+        }
+
         if ($cronJobMode && time() < strtotime($config['scheduled_date'])) {
             return null;
         }
