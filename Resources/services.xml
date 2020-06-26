@@ -16,7 +16,7 @@
             <tag name="shopware.event_subscriber"/>
         </service>
 
-        <service id="SwagTax\Subscriber\BasicSettingsTaxSubscriber">
+        <service id="SwagTax\Subscriber\BasicSettingsTaxSubscriber" class="SwagTax\Subscriber\BasicSettingsTaxSubscriber">
             <tag name="shopware.event_subscriber"/>
         </service>
     </services>
