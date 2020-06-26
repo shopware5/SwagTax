@@ -1,0 +1,19 @@
+name: PHP Lint
+
+on:
+    push:
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php-version: ['5.6', '7.4']
+        steps:
+            - uses: actions/checkout@v2
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '${{ matrix.php-version }}'
+            - run: find . -type f -name '*.php' -exec php -l {} \;
+
