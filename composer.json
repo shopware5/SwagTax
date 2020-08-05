@@ -1,4 +1,5 @@
 {
+    "name": "shopware-labs/swag-tax",
     "require-dev": {
         "frosh/shopware-classic-phpunit-bridge": "dev-master",
         "phpunit/phpunit": "^5"
