@@ -16,6 +16,11 @@
 
     <compatibility minVersion="5.2.0"/>
 
+    <changelog version="REPLACE_GLOBAL_WITH_NEXT_VERSION">
+        <changes lang="en">PT-12186 - Existing tax rates are now selectable.</changes>
+        <changes lang="de">PT-12186 - Bestehende Steuersätze sind nun auswählbar.</changes>
+    </changelog>
+
     <changelog version="1.0.3">
         <changes lang="en">Fixed Shopware 5.2 compatibility</changes>
         <changes lang="de">Shopware 5.2 Kompatibilität hergestellt</changes>

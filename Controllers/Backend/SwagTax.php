@@ -1,4 +1,9 @@
 <?php
+/**
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 use SwagTax\Components\TaxUpdater;
 
@@ -17,7 +22,7 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
             'recalculate_prices' => (bool) $params['recalculatePrices'],
             'tax_mapping' => $params['taxMapping'],
             'customer_group_mapping' => $params['customerGroupMapping'],
-            'scheduled_date' => $this->Request()->getParam('scheduledDate')
+            'scheduled_date' => $this->Request()->getParam('scheduledDate'),
         ]);
     }
 
@@ -34,13 +39,59 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
 SQL;
 
         $this->View()->assign([
-            'data' => $this->container->get('dbal_connection')->fetchAssoc(sprintf($sql, self::TABLE_NAME))
+            'data' => $this->container->get('dbal_connection')->fetchAssoc(sprintf($sql, self::TABLE_NAME)),
+        ]);
+    }
+
+    public function saveTaxRateAction()
+    {
+        $params = $this->Request()->getParams();
+        $connection = $this->container->get('dbal_connection');
+
+        $taxParams = $this->getTaxParams($params);
+        if ($taxParams === null) {
+            $this->view->assign([
+                'success' => false,
+            ]);
+
+            return;
+        }
+
+        $success = (bool) $connection->insert(
+            's_core_tax',
+            [
+                'tax' => $taxParams['taxRate'],
+                'description' => $taxParams['name'],
+            ]
+        );
+
+        $this->view->assign([
+            'success' => $success,
+            'id' => $connection->lastInsertId(),
         ]);
     }
 
     public function executeAction()
     {
         $this->container->get(TaxUpdater::class)->update();
+    }
+
+    /**
+     * @return array|null
+     */
+    private function getTaxParams(array $params)
+    {
+        $taxDescription = \trim($params['name'] ?? '');
+        $taxRate = (float) \trim($params['taxRate'] ?? '');
+
+        if ($taxDescription === '' || $taxRate === 0.0) {
+            return null;
+        }
+
+        return [
+            'name' => $taxDescription,
+            'taxRate' => $taxRate,
+        ];
     }
 
     private function clearTable()

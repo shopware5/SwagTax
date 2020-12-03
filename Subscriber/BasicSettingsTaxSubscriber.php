@@ -1,4 +1,9 @@
 <?php
+/**
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagTax\Subscriber;
 
@@ -10,7 +15,7 @@ class BasicSettingsTaxSubscriber implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PreDispatch_Backend_Config' => 'onPreDispatch'
+            'Enlight_Controller_Action_PreDispatch_Backend_Config' => 'onPreDispatch',
         ];
     }
 

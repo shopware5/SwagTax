@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * (c) shopware AG <info@shopware.com>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -32,7 +32,7 @@ class CronJobSubscriber implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'Shopware_CronJob_SwagTax' => 'onCronjobRun'
+            'Shopware_CronJob_SwagTax' => 'onCronjobRun',
         ];
     }
 
@@ -44,6 +44,7 @@ class CronJobSubscriber implements SubscriberInterface
             $this->cacheManager->clearConfigCache();
             $this->cacheManager->clearHttpCache();
             $this->cacheManager->clearTemplateCache();
+
             return 'Updated prices';
         }
 
