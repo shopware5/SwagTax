@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * (c) shopware AG <info@shopware.com>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ class SwagTax extends Plugin
     {
         return [
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_SwagTax' => 'registerSwagTaxController',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_SwagTax' => 'initController'
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_SwagTax' => 'initController',
         ];
     }
 
@@ -50,18 +50,18 @@ class SwagTax extends Plugin
         $connection->insert(
             's_crontab',
             [
-                'name'             => 'Update tax rate',
-                'action'           => 'Shopware_CronJob_SwagTax',
-                'next'             => new \DateTime(),
-                'start'            => null,
-                '`interval`'       => '300',
-                'active'           => 1,
-                'end'              => new \DateTime(),
-                'pluginID'         => null
+                'name' => 'Update tax rate',
+                'action' => 'Shopware_CronJob_SwagTax',
+                'next' => new \DateTime(),
+                'start' => null,
+                '`interval`' => '300',
+                'active' => 1,
+                'end' => new \DateTime(),
+                'pluginID' => null,
             ],
             [
                 'next' => 'datetime',
-                'end'  => 'datetime',
+                'end' => 'datetime',
             ]
         );
     }
@@ -69,7 +69,7 @@ class SwagTax extends Plugin
     public function removeCron()
     {
         $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_SwagTax'
+            'Shopware_CronJob_SwagTax',
         ]);
     }
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagTax\Test\Components;
 
@@ -7,10 +12,13 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Bundle\StoreFrontBundle\Service\ListProductServiceInterface;
 use Shopware\Bundle\StoreFrontBundle\Struct\ShopContextInterface;
 use Shopware\Components\Compatibility\LegacyStructConverter;
+use Shopware\Tests\Functional\Traits\DatabaseTransactionBehaviour;
 use SwagTax\Components\TaxUpdater;
 
 class TaxUpdaterTest extends TestCase
 {
+    use DatabaseTransactionBehaviour;
+
     const TABLE_NAME = 'swag_tax_config';
 
     /**
@@ -38,19 +46,15 @@ class TaxUpdaterTest extends TestCase
      */
     private $legacyStructConverter;
 
-    public function setUp()
+    public function __construct()
     {
         $this->taxUpdater = Shopware()->Container()->get(TaxUpdater::class);
         $this->con = Shopware()->Container()->get('dbal_connection');
         $this->listProductService = Shopware()->Container()->get('shopware_storefront.list_product_service');
         $this->context = Shopware()->Container()->get('shopware_storefront.context_service')->getContext();
         $this->legacyStructConverter = Shopware()->Container()->get('legacy_struct_converter');
-        Shopware()->Db()->beginTransaction();
-    }
 
-    public function tearDown()
-    {
-        Shopware()->Db()->rollBack();
+        parent::__construct();
     }
 
     public function testEmptyConfigTable()
@@ -65,7 +69,7 @@ class TaxUpdaterTest extends TestCase
             'recalculate_prices' => 1,
             'tax_mapping' => json_encode([1 => 15]),
             'customer_group_mapping' => json_encode(['EK']),
-            'scheduled_date' => (new \DateTime())->add(new \DateInterval('P30D'))->format('Y-m-d H:i:s')
+            'scheduled_date' => (new \DateTime())->add(new \DateInterval('P30D'))->format('Y-m-d H:i:s'),
         ]);
 
         static::assertFalse($this->taxUpdater->update(true));
@@ -78,7 +82,7 @@ class TaxUpdaterTest extends TestCase
             'recalculate_prices' => 1,
             'tax_mapping' => json_encode([1 => 15]),
             'customer_group_mapping' => json_encode(['EK']),
-            'scheduled_date' => (new \DateTime())->add(new \DateInterval('P1D'))->format('Y-m-d H:i:s')
+            'scheduled_date' => (new \DateTime())->add(new \DateInterval('P1D'))->format('Y-m-d H:i:s'),
         ]);
 
         static::assertTrue($this->taxUpdater->update());
@@ -86,15 +90,20 @@ class TaxUpdaterTest extends TestCase
 
     public function testTaxChangeOnOneTax()
     {
+        $sql = "INSERT INTO `s_core_tax` (`id`, `tax`, `description`)
+                VALUES (7, '15.00', '15 %');";
+
+        $this->con->executeQuery($sql);
+
         $products = $this->getProductNumberWithTax();
         $numbers = [$products[0]['ordernumber'], $products[1]['ordernumber']];
 
         $this->con->insert(self::TABLE_NAME, [
             'active' => 1,
             'recalculate_prices' => 1,
-            'tax_mapping' => json_encode([$products[0]['id'] => 15]),
+            'tax_mapping' => json_encode([$products[0]['id'] => 7]),
             'customer_group_mapping' => json_encode(['EK']),
-            'scheduled_date' => null
+            'scheduled_date' => null,
         ]);
 
         $currentProducts = $this->legacyStructConverter->convertListProductStructList($this->listProductService->getList($numbers, $this->context));

@@ -1,7 +1,18 @@
 {
     "name": "shopware-labs/swag-tax",
+    "type": "shopware-plugin",
+    "description": "Plugin that change the tax rate of all products.",
+    "license": "MIT",
+    "extra": {
+        "installer-name": "SwagTax"
+    },
     "require-dev": {
-        "frosh/shopware-classic-phpunit-bridge": "dev-master",
-        "phpunit/phpunit": "^5"
-    }
+        "shopware/plugin-dev-tools": "dev-2.x-dev"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/shopwareLabs/plugin-dev-tools"
+        }
+    ]
 }

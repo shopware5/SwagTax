@@ -21,40 +21,18 @@
  * our trademarks remain entirely with us.
  */
 
-//{block name="backend/swag_tax/application"}
-Ext.define('Shopware.apps.SwagTax', {
+//{block name="backend/swag_tax/model/mapping"}
+Ext.define('Shopware.apps.SwagTax.model.Mapping', {
+    extend: 'Ext.data.Model',
 
-    extend: 'Enlight.app.SubApplication',
-
-    loadPath: '{url action=load}',
-
-    bulkLoad: true,
-
-    controllers: [ 'Main', 'Wizard' ],
-
-    stores: [],
-
-    models: [
-        'Mapping'
-    ],
-
-    views: [
-        'main.Window',
-        'main.Wizard',
-        'main.CustomerGroupMapping',
-        'main.TaxMapping',
-        'steps.FirstCard',
-        'steps.SecondCard',
-        'steps.ThirdCard',
-        'steps.FourthCard',
-        'tax.TaxWindow'
-    ],
-
-    launch: function () {
-        var me = this,
-            mainController = me.getController('Main');
-
-        return mainController.mainWindow;
-    }
+    fields: [
+        // {block name="backend/swag_tax/model/mapping/fields"}{/block}
+        { name: 'id', type: 'int', useNull: false },
+        { name: 'tax', type: 'float', useNull: false },
+        { name: 'name', type: 'string', useNull: false },
+        { name: 'targetId', type: 'int', useNull: false },
+        { name: 'targetTax', type: 'float', useNull: true },
+        { name: 'targetName', type: 'string', useNull: false }
+    ]
 });
-//{/block}
+// {/block}

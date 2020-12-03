@@ -5,9 +5,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <defaults public="true"/>
+
         <service id="SwagTax\Components\TaxUpdater" class="SwagTax\Components\TaxUpdater">
-            <argument type="service" id="dbal_connection" />
-            <argument type="service" id="events" />
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="events"/>
         </service>
 
         <service id="SwagTax\Subscriber\CronJobSubscriber" class="SwagTax\Subscriber\CronJobSubscriber">
@@ -16,7 +18,8 @@
             <tag name="shopware.event_subscriber"/>
         </service>
 
-        <service id="SwagTax\Subscriber\BasicSettingsTaxSubscriber" class="SwagTax\Subscriber\BasicSettingsTaxSubscriber">
+        <service id="SwagTax\Subscriber\BasicSettingsTaxSubscriber"
+                 class="SwagTax\Subscriber\BasicSettingsTaxSubscriber">
             <tag name="shopware.event_subscriber"/>
         </service>
     </services>

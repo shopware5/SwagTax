@@ -31,10 +31,12 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
 
     allowSorting: false,
 
-    initComponent: function () {
+    createTaxWindow: null,
+
+    initComponent: function() {
         this.searchStore = Ext.create('Shopware.apps.Base.store.Tax');
-        this.store = new Ext.data.SimpleStore({
-            fields: ['id', 'name', 'tax']
+        this.store = Ext.create('Ext.data.Store', {
+            model: 'Shopware.apps.SwagTax.model.Mapping'
         });
 
         this.callParent(arguments);
@@ -42,8 +44,8 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
 
     setValue: function(value) {
         var me = this,
-            currentRecord,
-            currentRecordIndex;
+            sourceIndex,
+            targetIndex;
 
         me.store.removeAll();
 
@@ -51,34 +53,35 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
             return;
         }
 
-        me.searchStore.load(function () {
-            Ext.Object.each(value, function (key, value) {
-                currentRecordIndex = me.searchStore.findExact('id', ~~(key));
+        me.searchStore.load(function() {
+            Ext.Object.each(value, function(sourceId, targetId) {
+                sourceIndex = me.searchStore.findExact('id', ~~(sourceId));
+                targetIndex = me.searchStore.findExact('id', ~~(targetId));
 
-                if (currentRecordIndex === -1) {
+                if (sourceIndex === -1 || targetIndex === -1) {
                     return;
                 }
 
-                currentRecord = me.searchStore.getAt(currentRecordIndex);
-                currentRecord.set('tax', value);
-                me.store.add(currentRecord);
+                me.store.add(me.createRecord(
+                    me.searchStore.getAt(sourceIndex),
+                    me.searchStore.getAt(targetIndex)
+                ));
             });
         });
     },
 
-    getValue: function () {
-        var me = this,
-            recordData = {},
-            store = me.store;
+    getValue: function() {
+        var recordData = {},
+            store = this.store;
 
         store.each(function(item) {
-            recordData[item.get('id')] = item.get('tax')
+            recordData[item.get('id')] = item.get('targetId')
         });
 
         return recordData;
     },
 
-    getComboConfig: function () {
+    getComboConfig: function() {
         var config = this.callParent(arguments);
 
         config.fieldLabel = '{s name="tax_mapping/fieldLabel"}{/s}';
@@ -95,12 +98,31 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
 
         return Ext.create('Ext.grid.Panel', {
             columns: this.createColumns(),
+            tbar: this.createToolBar(),
             store: this.store,
             border: false,
             editor: rowEditingPlugin,
             plugins: [ rowEditingPlugin ],
             flex: 1,
             hideHeaders: this.hideHeaders
+        });
+    },
+
+    createToolBar: function() {
+        return Ext.create('Ext.toolbar.Toolbar', {
+            items: [ '->', this.createAddNewTaxButton() ],
+            dock: 'top',
+            ui: 'shopware-ui',
+            cls: 'shopware-toolbar'
+        });
+    },
+
+    createAddNewTaxButton: function() {
+        return Ext.create('Ext.button.Button', {
+            name: 'createTaxButton',
+            text: '{s name="tax_mapping/createTax"}{/s}',
+            iconCls: 'sprite-plus-circle-frame',
+            handler: Ext.bind(this.onClickAddTax, this)
         });
     },
 
@@ -123,13 +145,10 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
         });
 
         columns.push({
-            dataIndex: 'tax',
+            dataIndex: 'targetId',
             header: '{s name="tax_mapping/column/tax"}{/s}',
-            renderer: this.taxRenderer,
-            editor: {
-                xtype: 'numberfield',
-                minValue: 0
-            },
+            editor: this.createTaxRateEditor(),
+            renderer: Ext.bind(this.targetTaxColumnRenderer, this),
             flex: 1
         });
 
@@ -138,12 +157,101 @@ Ext.define('Shopware.apps.SwagTax.view.main.TaxMapping', {
         return columns;
     },
 
-    taxRenderer: function (value) {
-        if (!value) {
-            value = 0;
+    createTaxRateEditor: function() {
+        this.editor = {
+            xtype: 'combo',
+            forceSelection: true,
+            editable: false,
+            store: this.searchStore,
+            displayField: 'name',
+            valueField: 'id',
+            listeners: {
+                change: Ext.bind(this.onChangeTaxGridEditor, this),
+            }
         }
 
-        return value + '%';
-    }
+        return this.editor;
+    },
+
+    createRecord: function(sourceRecord, targetRecord) {
+        var currentRecord = Ext.create('Shopware.apps.SwagTax.model.Mapping');
+
+        if (sourceRecord) {
+            currentRecord.set('id', sourceRecord.get('id'));
+            currentRecord.set('name', sourceRecord.get('name'));
+            currentRecord.set('tax', sourceRecord.get('tax'));
+        }
+
+        if (targetRecord) {
+            currentRecord.set('targetId', targetRecord.get('id'));
+            currentRecord.set('targetName', targetRecord.get('name'));
+            currentRecord.set('targetTax', targetRecord.get('tax'));
+        }
+
+        return currentRecord;
+    },
+
+    addItem: function(record) {
+        var me = this,
+            exist = false,
+            newRecord = this.createRecord(record);
+
+        this.store.each(function(item) {
+            if (item.get('id') === record.get('id')) {
+                exist = true;
+            }
+        });
+
+        if (!exist) {
+            this.store.add(newRecord);
+        }
+
+        me.fixLayout();
+
+        this.fireEvent('change', this, this.getValue());
+
+        return !exist;
+    },
+
+    targetTaxColumnRenderer: function(value, clsObject, record) {
+        if (record.get('targetId') === 0) {
+            return '';
+        }
+
+        return 'ID: ' + record.get('targetId') + ' Name: ' + record.get('targetName')
+    },
+
+    createTaxRateWindowCallback: function(newRecordId) {
+        var me = this;
+
+        me.searchField.combo.getStore().load();
+        me.searchStore.load({
+            callback: function() {
+                me.onChangeTaxGridEditor(me, newRecordId);
+            },
+        });
+    },
+
+    onClickAddTax: function() {
+        this.createTaxWindow = Ext.create('Shopware.apps.SwagTax.view.tax.TaxWindow', {
+            taxSelectSearchField: this.searchField,
+            callBack: Ext.bind(this.createTaxRateWindowCallback, this),
+            scope: this
+        }).show();
+    },
+
+    onChangeTaxGridEditor: function(editor, newValue) {
+        var targetIndex = this.searchStore.findExact('id', ~~(newValue)),
+            targetRecord = this.searchStore.getAt(targetIndex),
+            selectedRecord = this.grid.getSelectionModel().getSelection()[0];
+
+        if (!targetRecord || !selectedRecord) {
+            return;
+        }
+
+        selectedRecord.set('targetId', targetRecord.get('id'));
+        selectedRecord.set('targetName', targetRecord.get('name'));
+        selectedRecord.set('targetTax', targetRecord.get('tax'));
+    },
 });
 //{/block}
