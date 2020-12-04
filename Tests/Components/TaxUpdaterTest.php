@@ -126,6 +126,34 @@ class TaxUpdaterTest extends TestCase
         static::assertEquals($currentProducts[$numbers[1]]['tax'], $updatedProducts[$numbers[1]]['tax']);
     }
 
+    public function test_update_expectedUpdatedPseudoPrice()
+    {
+        $sql = 'INSERT INTO `s_core_tax` (`id`, `tax`, `description`)
+                VALUES (7, "10.00", "10 %");';
+        $this->con->exec($sql);
+
+        $sql = 'UPDATE `s_articles_prices` SET `pseudoprice` = 25.210084033613 WHERE `id` = 473;';
+        $this->con->exec($sql);
+
+        $this->con->insert(self::TABLE_NAME, [
+            'active' => 1,
+            'recalculate_prices' => 0,
+            'recalculate_pseudoprices' => 1,
+            'tax_mapping' => json_encode([1 => 7]),
+            'customer_group_mapping' => json_encode(['EK']),
+            'scheduled_date' => (new \DateTime())->add(new \DateInterval('P1D'))->format('Y-m-d H:i:s'),
+        ]);
+
+        static::assertTrue($this->taxUpdater->update(false));
+
+        $resultSql = 'SELECT `pseudoprice` FROM `s_articles_prices` WHERE `id` = 473;';
+        $result = (float) $this->con->fetchColumn($resultSql);
+
+        $expectedPseudoPrice = 23.303439022667483;
+
+        static::assertSame($expectedPseudoPrice, $result);
+    }
+
     private function getProductNumberWithTax()
     {
         return $this->con->fetchAll('SELECT ordernumber, s_core_tax.tax, s_core_tax.id

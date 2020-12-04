@@ -12,6 +12,9 @@ use Enlight_Event_EventManager;
 
 class TaxUpdater
 {
+    const PRICE_COLUMN = 'price';
+    const PSEUDOPRICE_COLUMN = 'pseudoprice';
+
     /**
      * @var Connection
      */
@@ -53,7 +56,11 @@ class TaxUpdater
             $this->updateTaxIds($oldTaxId, $newTaxId);
 
             if ($config['recalculate_prices']) {
-                $this->recalculateProductPrices($oldTaxId, $newTaxRate, $newTaxId, $config['customer_group_mapping']);
+                $this->recalculatePrices($oldTaxId, $newTaxRate, $newTaxId, $config['customer_group_mapping'], self::PRICE_COLUMN);
+            }
+
+            if ($config['recalculate_pseudoprices']) {
+                $this->recalculatePrices($oldTaxId, $newTaxRate, $newTaxId, $config['customer_group_mapping'], self::PSEUDOPRICE_COLUMN);
             }
 
             $this->eventManager->notify('Swag_Tax_Updated_TaxRate', [
@@ -138,20 +145,28 @@ class TaxUpdater
     }
 
     /**
-     * @param int   $oldTaxId
-     * @param float $newTaxRate
-     * @param int   $newTaxId
-     * @param array $customer_group_mapping
+     * @param int    $oldTaxId
+     * @param float  $newTaxRate
+     * @param int    $newTaxId
+     * @param array  $customer_group_mapping
+     * @param string $column
      */
-    private function recalculateProductPrices($oldTaxId, $newTaxRate, $newTaxId, $customer_group_mapping)
+    private function recalculatePrices($oldTaxId, $newTaxRate, $newTaxId, $customer_group_mapping, $column)
     {
         $oldTaxRate = $this->connection->fetchColumn('SELECT tax FROM s_core_tax WHERE id = ?', [$oldTaxId]);
 
         $qb = $this->connection->createQueryBuilder();
         $qb->update('s_articles_prices', 'prices')
-            ->set('price', sprintf('price/%s*%s', 1 + ($newTaxRate / 100), 1 + ($oldTaxRate / 100)))
             ->where('prices.pricegroup IN (:groups)')
             ->andWhere('(SELECT taxID FROM s_articles WHERE id = prices.articleID) = :newTaxID');
+
+        if ($column === self::PRICE_COLUMN) {
+            $qb->set($column, sprintf('%s/%s*%s', $column, 1 + ($newTaxRate / 100), 1 + ($oldTaxRate / 100)));
+        }
+
+        if ($column === self::PSEUDOPRICE_COLUMN) {
+            $qb->set($column, sprintf('%s/%s*%s', $column, 1 + ($oldTaxRate / 100), 1 + ($newTaxRate / 100)));
+        }
 
         $qb->setParameter(':groups', $customer_group_mapping, Connection::PARAM_STR_ARRAY);
         $qb->setParameter(':newTaxID', $newTaxId);

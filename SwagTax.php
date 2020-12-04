@@ -10,6 +10,7 @@ namespace SwagTax;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
+use Shopware\Components\Plugin\Context\UpdateContext;
 
 class SwagTax extends Plugin
 {
@@ -26,6 +27,7 @@ class SwagTax extends Plugin
         $this->container->get('dbal_connection')->executeQuery('CREATE TABLE `swag_tax_config` (
   `active` tinyint(1) NOT NULL,
   `recalculate_prices` tinyint(1) NOT NULL,
+  `recalculate_pseudoprices` tinyint(1) NOT NULL DEFAULT "0",
   `tax_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
   `customer_group_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
   `scheduled_date` datetime DEFAULT NULL
@@ -34,6 +36,14 @@ class SwagTax extends Plugin
 
         $this->addCron();
         $this->container->get('acl')->createResource('swagtax', ['read']);
+    }
+
+    public function update(UpdateContext $context)
+    {
+        if (version_compare($context->getCurrentVersion(), 'REPLACE_GLOBAL_WITH_NEXT_VERSION', '<')) {
+            $sql = 'ALTER TABLE `swag_tax_config` ADD `recalculate_pseudoprices` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_prices`';
+            $this->container->get('dbal_connection')->executeQuery($sql);
+        }
     }
 
     public function uninstall(UninstallContext $context)
