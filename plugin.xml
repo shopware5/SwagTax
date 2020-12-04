@@ -17,8 +17,14 @@
     <compatibility minVersion="5.2.0"/>
 
     <changelog version="REPLACE_GLOBAL_WITH_NEXT_VERSION">
-        <changes lang="en">PT-12186 - Existing tax rates are now selectable.</changes>
-        <changes lang="de">PT-12186 - Bestehende Steuersätze sind nun auswählbar.</changes>
+        <changes lang="en">
+            PT-12186 - Existing tax rates are now selectable;
+            PT-12187 - Pseudo prices can now also be adjusted;
+        </changes>
+        <changes lang="de">
+            PT-12186 - Bestehende Steuersätze sind nun auswählbar;
+            PT-12187 - Pseudopreise können nun auch angepasst werden;
+        </changes>
     </changelog>
 
     <changelog version="1.0.3">

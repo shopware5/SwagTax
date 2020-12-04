@@ -26,12 +26,12 @@
 Ext.define('Shopware.apps.SwagTax.controller.Main', {
     extend: 'Enlight.app.Controller',
 
-    init: function () {
+    init: function() {
         var me = this;
 
         Ext.Ajax.request({
             url: '{url action=loadConfig}',
-            success: function (response) {
+            success: function(response) {
                 var operation = Ext.decode(response.responseText);
                 operation.data.customerGroupMapping = Ext.JSON.decode(operation.data.customerGroupMapping);
                 operation.data.taxMapping = Ext.JSON.decode(operation.data.taxMapping);

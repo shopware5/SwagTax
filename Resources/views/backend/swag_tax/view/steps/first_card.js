@@ -27,7 +27,7 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
     extend: 'Ext.container.Container',
     swId: 'card-0',
 
-    initComponent: function () {
+    initComponent: function() {
         this.items = [
             {
                 xtype: 'fieldset',
@@ -51,6 +51,17 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
                         fieldLabel: '{s name="first_card/recalculatePrices"}{/s}',
                         supportText: '{s name="first_card/recalculatePrices/support"}{/s}',
                         name: 'recalculatePrices',
+                        labelWidth: 155,
+                        inputValue: true,
+                        uncheckedValue: false,
+                        labelStyle: 'margin-top: 0;'
+                    },
+                    {
+                        xtype: 'checkbox',
+                        fieldLabel: '{s name="first_card/recalculatePseudoPrices"}{/s}',
+                        supportText: '{s name="first_card/recalculatePseudoPrices/support"}{/s}',
+                        name: 'recalculatePseudoPrices',
+                        labelWidth: 155,
                         inputValue: true,
                         uncheckedValue: false,
                         labelStyle: 'margin-top: 0;'

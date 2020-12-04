@@ -20,6 +20,7 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
         $this->container->get('dbal_connection')->insert(self::TABLE_NAME, [
             'active' => 1,
             'recalculate_prices' => (bool) $params['recalculatePrices'],
+            'recalculate_pseudoprices' => (bool) $params['recalculatePseudoPrices'],
             'tax_mapping' => $params['taxMapping'],
             'customer_group_mapping' => $params['customerGroupMapping'],
             'scheduled_date' => $this->Request()->getParam('scheduledDate'),
@@ -32,6 +33,7 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
             SELECT
                `active`,
                `recalculate_prices` as recalculatePrices,
+               `recalculate_pseudoprices` as recalculatePseudoPrices,
                `tax_mapping` as taxMapping,
                `customer_group_mapping` as customerGroupMapping,
                `scheduled_date` as scheduledDate
