@@ -35,6 +35,7 @@ Ext.define('Shopware.apps.SwagTax.controller.Main', {
                 var operation = Ext.decode(response.responseText);
                 operation.data.customerGroupMapping = Ext.JSON.decode(operation.data.customerGroupMapping);
                 operation.data.taxMapping = Ext.JSON.decode(operation.data.taxMapping);
+                operation.data.shops = Ext.JSON.decode(operation.data.shops);
 
                 if (operation.data.scheduledDate === '0000-00-00 00:00:00') {
                     delete operation.data.scheduledDate;

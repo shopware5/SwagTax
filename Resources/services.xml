@@ -10,6 +10,12 @@
         <service id="SwagTax\Components\TaxUpdater" class="SwagTax\Components\TaxUpdater">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="events"/>
+            <argument type="service" id="SwagTax\Components\ShopConfigUpdater"/>
+        </service>
+
+        <service id="SwagTax\Components\ShopConfigUpdater" class="SwagTax\Components\ShopConfigUpdater">
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="config"/>
         </service>
 
         <service id="SwagTax\Subscriber\CronJobSubscriber" class="SwagTax\Subscriber\CronJobSubscriber">

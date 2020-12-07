@@ -154,6 +154,44 @@ class TaxUpdaterTest extends TestCase
         static::assertSame($expectedPseudoPrice, $result);
     }
 
+    public function test_shouldUpdateOtherTaxRates()
+    {
+        $sql = 'INSERT INTO `s_core_tax` (`id`, `tax`, `description`)
+                VALUES (7, "10.00", "10 %");';
+        $this->con->exec($sql);
+
+        $sql = 'UPDATE `s_articles_prices` SET `pseudoprice` = 25.210084033613 WHERE `id` = 473;';
+        $this->con->exec($sql);
+
+        $this->con->insert(self::TABLE_NAME, [
+            'active' => 1,
+            'recalculate_prices' => 0,
+            'recalculate_pseudoprices' => 1,
+            'adjust_voucher_tax' => true,
+            'adjust_discount_tax' => true,
+            'shops' => json_encode([1, 2]),
+            'tax_mapping' => json_encode([1 => 7]),
+            'customer_group_mapping' => json_encode(['EK']),
+            'scheduled_date' => (new \DateTime())->add(new \DateInterval('P1D'))->format('Y-m-d H:i:s'),
+        ]);
+
+        static::assertTrue($this->taxUpdater->update(false));
+
+        $sql = "SELECT cv.id, cv.shop_id, ce.name, cv.value FROM s_core_config_values as cv
+                JOIN s_core_config_elements ce ON ce.id = cv.element_id
+                WHERE ce.name IN ('vouchertax', 'discounttax')
+                ORDER BY cv.shop_id";
+
+        $expectedResult = require __DIR__ . '/_fixtures/otherTaxRatesUpdateResult.php';
+        $result = $this->con->fetchAll($sql);
+
+        foreach ($result as $index => $resultElement) {
+            static::assertSame($expectedResult[$index]['shopId'], $resultElement['shopId']);
+            static::assertSame($expectedResult[$index]['name'], $resultElement['name']);
+            static::assertSame($expectedResult[$index]['value'], $resultElement['value']);
+        }
+    }
+
     private function getProductNumberWithTax()
     {
         return $this->con->fetchAll('SELECT ordernumber, s_core_tax.tax, s_core_tax.id

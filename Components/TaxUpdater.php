@@ -25,10 +25,16 @@ class TaxUpdater
      */
     private $eventManager;
 
-    public function __construct(Connection $connection, Enlight_Event_EventManager $eventManager)
+    /**
+     * @var ShopConfigUpdater
+     */
+    private $shopConfigUpdater;
+
+    public function __construct(Connection $connection, Enlight_Event_EventManager $eventManager, ShopConfigUpdater $shopConfigUpdater)
     {
         $this->connection = $connection;
         $this->eventManager = $eventManager;
+        $this->shopConfigUpdater = $shopConfigUpdater;
     }
 
     /**
@@ -45,7 +51,8 @@ class TaxUpdater
         }
 
         foreach ($config['tax_mapping'] as $oldTaxId => $newTaxId) {
-            $newTaxRate = $this->getTaxRateById((int) $newTaxId);
+            $newTaxRate = $this->getTaxRateById((float) $newTaxId);
+            $oldTaxRate = $this->getTaxRateById((float) $oldTaxId);
 
             $this->copyTaxRules($oldTaxId, $newTaxId);
 
@@ -62,6 +69,8 @@ class TaxUpdater
             if ($config['recalculate_pseudoprices']) {
                 $this->recalculatePrices($oldTaxId, $newTaxRate, $newTaxId, $config['customer_group_mapping'], self::PSEUDOPRICE_COLUMN);
             }
+
+            $this->shopConfigUpdater->update($config, $oldTaxRate, $newTaxRate);
 
             $this->eventManager->notify('Swag_Tax_Updated_TaxRate', [
                 'config' => $config,
@@ -122,8 +131,12 @@ class TaxUpdater
         }
 
         $config['recalculate_prices'] = (bool) $config['recalculate_prices'];
-        $config['tax_mapping'] = json_decode($config['tax_mapping'], true);
-        $config['customer_group_mapping'] = json_decode($config['customer_group_mapping'], true);
+        $config['recalculate_pseudoprices'] = (bool) $config['recalculate_pseudoprices'];
+        $config['adjust_voucher_tax'] = (bool) $config['adjust_voucher_tax'];
+        $config['adjust_discount_tax'] = (bool) $config['adjust_discount_tax'];
+        $config['shops'] = \json_decode($config['shops'], true);
+        $config['tax_mapping'] = \json_decode($config['tax_mapping'], true);
+        $config['customer_group_mapping'] = \json_decode($config['customer_group_mapping'], true);
 
         return $config;
     }

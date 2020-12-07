@@ -21,41 +21,24 @@
  * our trademarks remain entirely with us.
  */
 
-//{block name="backend/swag_tax/application"}
-Ext.define('Shopware.apps.SwagTax', {
+//{namespace name="backend/swag_tax/main"}
+//{block name="backend/swag_tax/view/main/shop_combo_box"}
+Ext.define('Shopware.apps.SwagTax.view.components.ShopComboBox', {
+    extend: 'Shopware.form.field.PagingComboBox',
+    alias: 'widget.shopComboBox',
 
-    extend: 'Enlight.app.SubApplication',
+    multiSelect: true,
+    valueField: 'id',
+    displayField: 'name',
+    forceSelection: true,
+    pageSize: 25,
 
-    loadPath: '{url action=load}',
+    initComponent: function() {
+        var me = this;
 
-    bulkLoad: true,
+        me.store = Ext.create('Shopware.apps.Base.store.Shop');
 
-    controllers: [ 'Main', 'Wizard' ],
-
-    stores: [],
-
-    models: [
-        'Mapping'
-    ],
-
-    views: [
-        'main.Window',
-        'main.Wizard',
-        'main.CustomerGroupMapping',
-        'main.TaxMapping',
-        'steps.FirstCard',
-        'steps.SecondCard',
-        'steps.ThirdCard',
-        'steps.FourthCard',
-        'tax.TaxWindow',
-        'components.ShopComboBox',
-    ],
-
-    launch: function () {
-        var me = this,
-            mainController = me.getController('Main');
-
-        return mainController.mainWindow;
-    }
+        me.callParent(arguments);
+    },
 });
 //{/block}

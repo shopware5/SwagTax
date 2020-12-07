@@ -57,6 +57,7 @@ Ext.define('Shopware.apps.SwagTax.view.main.Wizard', {
             swId: 'card-prev',
             cls: 'secondary card-prev',
             text: '{s name="wizard/prevBtn"}{/s}',
+            hidden: true,
             disabled: true,
             handler: function () {
                 me.fireEvent('previous');

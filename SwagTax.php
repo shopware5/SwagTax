@@ -28,6 +28,9 @@ class SwagTax extends Plugin
   `active` tinyint(1) NOT NULL,
   `recalculate_prices` tinyint(1) NOT NULL,
   `recalculate_pseudoprices` tinyint(1) NOT NULL DEFAULT "0",
+  `adjust_voucher_tax` tinyint(1) NOT NULL DEFAULT "0",
+  `adjust_discount_tax` tinyint(1) NOT NULL DEFAULT "0",
+  `shops` longtext COLLATE utf8_unicode_ci,
   `tax_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
   `customer_group_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
   `scheduled_date` datetime DEFAULT NULL
@@ -41,8 +44,19 @@ class SwagTax extends Plugin
     public function update(UpdateContext $context)
     {
         if (version_compare($context->getCurrentVersion(), 'REPLACE_GLOBAL_WITH_NEXT_VERSION', '<')) {
+            $connection = $this->container->get('dbal_connection');
+
             $sql = 'ALTER TABLE `swag_tax_config` ADD `recalculate_pseudoprices` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_prices`';
-            $this->container->get('dbal_connection')->executeQuery($sql);
+            $connection->executeQuery($sql);
+
+            $sql = 'ALTER TABLE `swag_tax_config` ADD `adjust_voucher_tax` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_pseudoprices`';
+            $connection->executeQuery($sql);
+
+            $sql = 'ALTER TABLE `swag_tax_config` ADD `adjust_discount_tax` TINYINT(1) NOT NULL DEFAULT "0" AFTER `adjust_voucher_tax`';
+            $connection->executeQuery($sql);
+
+            $sql = 'ALTER TABLE `swag_tax_config` ADD `shops` longtext COLLATE utf8_unicode_ci AFTER `adjust_discount_tax`';
+            $connection->executeQuery($sql);
         }
     }
 

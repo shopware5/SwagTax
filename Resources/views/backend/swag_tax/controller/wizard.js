@@ -93,6 +93,9 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
             params: {
                 recalculatePrices: ~~(values.recalculatePrices),
                 recalculatePseudoPrices: ~~(values.recalculatePseudoPrices),
+                adjustVoucherTax: ~~(values.adjustVoucherTax),
+                adjustDiscountTax: ~~(values.adjustDiscountTax),
+                shops: Ext.JSON.encode(values.shops),
                 taxMapping: Ext.JSON.encode(values.taxMapping),
                 customerGroupMapping: Ext.JSON.encode(values.customerGroupMapping),
                 scheduledDate: values.scheduledDate,
@@ -153,6 +156,11 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
         } else if (next === wizard.items.length - 3) {
             this.getSaveBtn().hide();
             this.getNextBtn().show();
+        }
+
+        this.getPrevBtn().show();
+        if (next === 0) {
+            this.getPrevBtn().hide();
         }
 
         layout.setActiveItem(next);

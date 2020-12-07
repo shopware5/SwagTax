@@ -45,6 +45,7 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
             {
                 xtype: 'fieldset',
                 title: '{s name="wizard/information_panel/settings"}{/s}',
+                layout: 'anchor',
                 items: [
                     {
                         xtype: 'checkbox',
@@ -65,12 +66,59 @@ Ext.define('Shopware.apps.SwagTax.view.steps.FirstCard', {
                         inputValue: true,
                         uncheckedValue: false,
                         labelStyle: 'margin-top: 0;'
+                    },
+                    {
+                        xtype: 'checkbox',
+                        fieldLabel: '{s name="first_card/adjustVoucherTax"}{/s}',
+                        supportText: '{s name="first_card/adjustVoucherTax/support"}{/s}',
+                        name: 'adjustVoucherTax',
+                        labelWidth: 155,
+                        inputValue: true,
+                        uncheckedValue: false,
+                        labelStyle: 'margin-top: 0;',
+                        listeners: {
+                            change: Ext.bind(this.onChangeCheckBox, this),
+                        }
+                    },
+                    {
+                        xtype: 'checkbox',
+                        fieldLabel: '{s name="first_card/adjustDiscountTax"}{/s}',
+                        supportText: '{s name="first_card/adjustDiscountTax/support"}{/s}',
+                        name: 'adjustDiscountTax',
+                        labelWidth: 155,
+                        inputValue: true,
+                        uncheckedValue: false,
+                        labelStyle: 'margin-top: 0;',
+                        listeners: {
+                            change: Ext.bind(this.onChangeCheckBox, this),
+                        }
+                    },
+                    {
+                        xtype: 'shopComboBox',
+                        fieldLabel: '{s name="first_card/shopSelect"}{/s}',
+                        supportText: '{s name="first_card/shopSelect/support"}{/s}',
+                        name: 'shops',
+                        anchor: '100%',
+                        labelWidth: 155,
+                        disabled: true,
                     }
                 ]
             }
         ];
 
         this.callParent(arguments);
-    }
+    },
+
+    afterRender: function() {
+        this.callParent(arguments);
+
+        this.voucherCheckBox = Ext.ComponentQuery.query('[name=adjustVoucherTax]')[0];
+        this.discountCheckBox = Ext.ComponentQuery.query('[name=adjustDiscountTax]')[0];
+        this.shopSelect = Ext.ComponentQuery.query('[name=shops]')[0];
+    },
+
+    onChangeCheckBox: function() {
+        this.shopSelect.setDisabled(!(this.voucherCheckBox.getValue() || this.discountCheckBox.getValue()));
+    },
 });
 //{/block}
