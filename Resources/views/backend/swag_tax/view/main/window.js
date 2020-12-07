@@ -25,21 +25,37 @@
 //{block name="backend/swag_tax/view/main"}
 Ext.define('Shopware.apps.SwagTax.view.main.Window', {
     extend: 'Enlight.app.Window',
-    height: 500,
+    height: 595,
     width: 1000,
     layout: 'border',
     title: '{s name="title"}{/s}',
     wizard: null,
 
-    initComponent: function () {
+    initComponent: function() {
         this.wizard = Ext.create('Shopware.apps.SwagTax.view.main.Wizard');
         this.items = this.wizard;
 
         this.callParent(arguments);
     },
 
-    setData: function (data) {
+    setData: function(data) {
         this.wizard.getForm().setValues(data);
+
+        var shopSelect = Ext.ComponentQuery.query('[name=shops]')[0],
+            store = shopSelect.getStore();
+
+        store.load({
+            callback: function() {
+                var select = [];
+                Ext.Array.each(data.shops, function(value) {
+                    var index = store.findExact('id', value),
+                        shop = store.getAt(index);
+                    select.push(shop);
+                });
+
+                shopSelect.select(select);
+            },
+        });
     }
 });
 //{/block}

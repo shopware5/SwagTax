@@ -20,10 +20,12 @@
         <changes lang="en">
             PT-12186 - Existing tax rates are now selectable;
             PT-12187 - Pseudo prices can now also be adjusted;
+            PT-12188 - "Other tax rates" can now also be changed in the basic settings;
         </changes>
         <changes lang="de">
             PT-12186 - Bestehende Steuersätze sind nun auswählbar;
             PT-12187 - Pseudopreise können nun auch angepasst werden;
+            PT-12188 - "Sonstige Mwst-Sätze" in den Grundeinstellungen können nun mit angepasst werden;
         </changes>
     </changelog>
 
