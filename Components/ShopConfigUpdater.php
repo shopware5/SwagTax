@@ -8,8 +8,12 @@
 namespace SwagTax\Components;
 
 use Doctrine\DBAL\Connection;
+use Shopware\Components\Model\ModelManager;
+use Shopware\Models\Shop\Shop;
 use Shopware_Components_Config as ShopConfig;
 use SwagTax\Exceptions\ConfigElementNotFoundException;
+use SwagTax\Structs\TaxMapping;
+use SwagTax\Structs\UpdateConfig;
 
 class ShopConfigUpdater
 {
@@ -26,30 +30,33 @@ class ShopConfigUpdater
      */
     private $shopConfig;
 
-    public function __construct(Connection $connection, ShopConfig $shopConfig)
+    /**
+     * @var ModelManager
+     */
+    private $modelManager;
+
+    public function __construct(Connection $connection, ShopConfig $shopConfig, ModelManager $modelManager)
     {
         $this->connection = $connection;
         $this->shopConfig = $shopConfig;
+        $this->modelManager = $modelManager;
     }
 
-    /**
-     * @param float $oldTaxRate
-     * @param float $newTaxRate
-     */
-    public function update(array $config, $oldTaxRate, $newTaxRate)
+    public function update(UpdateConfig $config, TaxMapping $taxMapping)
     {
-        if ($config['adjust_voucher_tax']) {
+        if ($config->getAdjustVoucherTax()) {
             $currentVoucherTaxRate = (float) $this->shopConfig->get(self::CONFIG_NAME_VOUCHER_TAX, 0.0);
-            if ($oldTaxRate === $currentVoucherTaxRate) {
-                $this->updataShopConfig(self::CONFIG_NAME_VOUCHER_TAX, $newTaxRate, $config['shops']);
+
+            if ($taxMapping->getOldTaxRate() === $currentVoucherTaxRate) {
+                $this->updataShopConfig(self::CONFIG_NAME_VOUCHER_TAX, $taxMapping->getNewTaxRate());
             }
         }
 
-        if ($config['adjust_discount_tax']) {
+        if ($config->getAdjustDiscountTax()) {
             $currentDiscountTaxRate = (float) $this->shopConfig->get(self::CONFIG_NAME_DISCOUNT_TAX, 0.0);
 
-            if ($oldTaxRate === $currentDiscountTaxRate) {
-                $this->updataShopConfig(self::CONFIG_NAME_DISCOUNT_TAX, $newTaxRate, $config['shops']);
+            if ($taxMapping->getOldTaxRate() === $currentDiscountTaxRate) {
+                $this->updataShopConfig(self::CONFIG_NAME_DISCOUNT_TAX, $taxMapping->getNewTaxRate());
             }
         }
     }
@@ -58,31 +65,31 @@ class ShopConfigUpdater
      * @param string $configName
      * @param float  $newValue
      */
-    private function updataShopConfig($configName, $newValue, array $shops)
+    private function updataShopConfig($configName, $newValue)
     {
         $newValue = \serialize((string) $newValue);
+        $shopId = $this->modelManager->getRepository(Shop::class)->getActiveDefault()->getId();
 
-        foreach ($shops as $shopId) {
-            $configValueId = $this->getConfigValueId($configName, $shopId);
+        $configValueId = $this->getConfigValueId($configName, $shopId);
 
-            if ($configValueId === null) {
-                $this->createConfigValue(
-                    $this->getConfigElementId($configName),
-                    $shopId,
-                    $newValue
-                );
-                continue;
-            }
+        if ($configValueId === null) {
+            $this->createConfigValue(
+                $this->getConfigElementId($configName),
+                $shopId,
+                $newValue
+            );
 
-            $this->updateConfigValue($configValueId, $newValue);
+            return;
         }
+
+        $this->updateConfigValue($configValueId, $newValue);
     }
 
     /**
      * @param string $configName
      * @param int    $shopId
      *
-     * @return array
+     * @return int
      */
     private function getConfigValueId($configName, $shopId)
     {

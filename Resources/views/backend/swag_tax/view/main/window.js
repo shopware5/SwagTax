@@ -40,22 +40,6 @@ Ext.define('Shopware.apps.SwagTax.view.main.Window', {
 
     setData: function(data) {
         this.wizard.getForm().setValues(data);
-
-        var shopSelect = Ext.ComponentQuery.query('[name=shops]')[0],
-            store = shopSelect.getStore();
-
-        store.load({
-            callback: function() {
-                var select = [];
-                Ext.Array.each(data.shops, function(value) {
-                    var index = store.findExact('id', value),
-                        shop = store.getAt(index);
-                    select.push(shop);
-                });
-
-                shopSelect.select(select);
-            },
-        });
     }
 });
 //{/block}

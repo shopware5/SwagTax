@@ -46,7 +46,20 @@ Ext.define('Shopware.apps.SwagTax.view.steps.SecondCard', {
                 ],
             },
 
-            Ext.create('Shopware.apps.SwagTax.view.main.TaxMapping')
+            Ext.create('Shopware.apps.SwagTax.view.main.TaxMapping'),
+
+            {
+                xtype: 'checkbox',
+                fieldLabel: '{s name="second_card/copyTaxRules"}{/s}',
+                supportText: '{s name="second_card/copyTaxRules/support"}{/s}',
+                name: 'copyTaxRules',
+                labelWidth: 155,
+                inputValue: true,
+                uncheckedValue: false,
+                margin: '20 0 0 0',
+                labelStyle: 'margin-top: 0;',
+            },
+
         ];
 
         this.callParent(arguments);

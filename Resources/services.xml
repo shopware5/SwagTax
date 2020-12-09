@@ -11,11 +11,13 @@
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="events"/>
             <argument type="service" id="SwagTax\Components\ShopConfigUpdater"/>
+            <argument type="service" id="SwagTax\Components\ThirdPlugins\ThirdPluginUpdater"/>
         </service>
 
         <service id="SwagTax\Components\ShopConfigUpdater" class="SwagTax\Components\ShopConfigUpdater">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="config"/>
+            <argument type="service" id="models"/>
         </service>
 
         <service id="SwagTax\Subscriber\CronJobSubscriber" class="SwagTax\Subscriber\CronJobSubscriber">
@@ -27,6 +29,27 @@
         <service id="SwagTax\Subscriber\BasicSettingsTaxSubscriber"
                  class="SwagTax\Subscriber\BasicSettingsTaxSubscriber">
             <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="SwagTax\Components\ThirdPlugins\ThirdPluginUpdater"
+                 class="SwagTax\Components\ThirdPlugins\ThirdPluginUpdater">
+            <argument type="service" id="SwagTax\Components\ThirdPlugins\ThirdPluginHandlerFactory"/>
+        </service>
+
+        <service id="SwagTax\Components\ThirdPlugins\ThirdPluginHandlerFactory"
+                 class="SwagTax\Components\ThirdPlugins\ThirdPluginHandlerFactory">
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="events"/>
+        </service>
+
+        <service id="SwagTax\Components\ThirdPlugins\SwagBundleHandler"
+                 class="SwagTax\Components\ThirdPlugins\SwagBundleHandler">
+            <argument type="service" id="dbal_connection"/>
+        </service>
+
+        <service id="SwagTax\Components\ThirdPlugins\SwagCustomProductsHandler"
+                 class="SwagTax\Components\ThirdPlugins\SwagCustomProductsHandler">
+            <argument type="service" id="dbal_connection"/>
         </service>
     </services>
 </container>

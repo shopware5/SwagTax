@@ -95,7 +95,7 @@ Ext.define('Shopware.apps.SwagTax.controller.Wizard', {
                 recalculatePseudoPrices: ~~(values.recalculatePseudoPrices),
                 adjustVoucherTax: ~~(values.adjustVoucherTax),
                 adjustDiscountTax: ~~(values.adjustDiscountTax),
-                shops: Ext.JSON.encode(values.shops),
+                copyTaxRules: ~~(values.copyTaxRules),
                 taxMapping: Ext.JSON.encode(values.taxMapping),
                 customerGroupMapping: Ext.JSON.encode(values.customerGroupMapping),
                 scheduledDate: values.scheduledDate,
