@@ -58,11 +58,6 @@ class SwagBundleHandler extends AbstractThirdPlugin
 
     private function recalculate(TaxMapping $taxMapping, array $priceIds)
     {
-        // TODO: REMOVE AFTER DEBUG
-        error_log(print_r('BAM', true), 3, 'error.log');
-        error_log(PHP_EOL, 3, 'error.log');
-        // TODO: REMOVE AFTER DEBUG
-
         $this->connection->createQueryBuilder()->update('s_articles_bundles_prices', 'prices')
             ->where('prices.id IN (:priceIds)')
             ->set(
