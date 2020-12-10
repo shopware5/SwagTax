@@ -220,7 +220,7 @@ class TaxUpdaterTest extends TestCase
 
         $expectedBundleResult = [
             [
-                'price' => '58.99842975206568',
+                'price' => '54.53636363636324',
             ], [
                 'price' => '42.981308411215',
             ],
