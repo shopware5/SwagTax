@@ -30,8 +30,8 @@ class SwagTax extends Plugin
   `recalculate_pseudoprices` tinyint(1) NOT NULL DEFAULT "0",
   `adjust_voucher_tax` tinyint(1) NOT NULL DEFAULT "0",
   `adjust_discount_tax` tinyint(1) NOT NULL DEFAULT "0",
-  `shops` longtext COLLATE utf8_unicode_ci,
   `tax_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `copy_tax_rules` tinyint(1) NOT NULL DEFAULT "0",
   `customer_group_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
   `scheduled_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -55,7 +55,7 @@ class SwagTax extends Plugin
             $sql = 'ALTER TABLE `swag_tax_config` ADD `adjust_discount_tax` TINYINT(1) NOT NULL DEFAULT "0" AFTER `adjust_voucher_tax`';
             $connection->executeQuery($sql);
 
-            $sql = 'ALTER TABLE `swag_tax_config` ADD `shops` longtext COLLATE utf8_unicode_ci AFTER `adjust_discount_tax`';
+            $sql = 'ALTER TABLE `swag_tax_config` ADD `copy_tax_rules` TINYINT(1) NOT NULL DEFAULT "0" AFTER `tax_mapping`';
             $connection->executeQuery($sql);
         }
     }

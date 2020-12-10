@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagTax\Test\Controller\Backend;
+namespace SwagTax\Tests\Controller\Backend;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Tests\Functional\Traits\DatabaseTransactionBehaviour;

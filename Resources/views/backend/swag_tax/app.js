@@ -48,7 +48,6 @@ Ext.define('Shopware.apps.SwagTax', {
         'steps.ThirdCard',
         'steps.FourthCard',
         'tax.TaxWindow',
-        'components.ShopComboBox',
     ],
 
     launch: function () {

@@ -23,8 +23,8 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
             'recalculate_pseudoprices' => (bool) $params['recalculatePseudoPrices'],
             'adjust_voucher_tax' => (bool) $params['adjustVoucherTax'],
             'adjust_discount_tax' => (bool) $params['adjustDiscountTax'],
-            'shops' => $params['shops'],
             'tax_mapping' => $params['taxMapping'],
+            'copy_tax_rules' => (bool) $params['copyTaxRules'],
             'customer_group_mapping' => $params['customerGroupMapping'],
             'scheduled_date' => $this->Request()->getParam('scheduledDate'),
         ]);
@@ -39,8 +39,8 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
                `recalculate_pseudoprices` as recalculatePseudoPrices,
                `adjust_voucher_tax` as adjustVoucherTax,
                `adjust_discount_tax` as adjustDiscountTax,
-               `shops`,
                `tax_mapping` as taxMapping,
+               `copy_tax_rules` as copyTaxRules,
                `customer_group_mapping` as customerGroupMapping,
                `scheduled_date` as scheduledDate
             FROM %s

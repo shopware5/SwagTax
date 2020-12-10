@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagTax\Test\Components;
+namespace SwagTax\Tests\Components;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
@@ -14,10 +14,12 @@ use Shopware\Bundle\StoreFrontBundle\Struct\ShopContextInterface;
 use Shopware\Components\Compatibility\LegacyStructConverter;
 use Shopware\Tests\Functional\Traits\DatabaseTransactionBehaviour;
 use SwagTax\Components\TaxUpdater;
+use SwagTax\Tests\PluginDependencyTrait;
 
 class TaxUpdaterTest extends TestCase
 {
     use DatabaseTransactionBehaviour;
+    use PluginDependencyTrait;
 
     const TABLE_NAME = 'swag_tax_config';
 
@@ -154,7 +156,7 @@ class TaxUpdaterTest extends TestCase
         static::assertSame($expectedPseudoPrice, $result);
     }
 
-    public function test_shouldUpdateOtherTaxRates()
+    public function test_update_shouldUpdateOtherTaxRates()
     {
         $sql = 'INSERT INTO `s_core_tax` (`id`, `tax`, `description`)
                 VALUES (7, "10.00", "10 %");';
@@ -169,7 +171,6 @@ class TaxUpdaterTest extends TestCase
             'recalculate_pseudoprices' => 1,
             'adjust_voucher_tax' => true,
             'adjust_discount_tax' => true,
-            'shops' => json_encode([1, 2]),
             'tax_mapping' => json_encode([1 => 7]),
             'customer_group_mapping' => json_encode(['EK']),
             'scheduled_date' => (new \DateTime())->add(new \DateInterval('P1D'))->format('Y-m-d H:i:s'),
@@ -192,13 +193,118 @@ class TaxUpdaterTest extends TestCase
         }
     }
 
+    public function test_update_shouldUpdateThirdPlugins()
+    {
+        $this->isPluginInstalled('SwagBundle');
+        $this->isPluginInstalled('SwagCustomProducts');
+
+        $sql = 'INSERT INTO `s_core_tax` (`id`, `tax`, `description`)
+                VALUES (7, "10.00", "10 %");';
+        $this->con->exec($sql);
+
+        $this->con->insert(self::TABLE_NAME, [
+            'active' => 1,
+            'recalculate_prices' => 1,
+            'recalculate_pseudoprices' => 0,
+            'adjust_voucher_tax' => 0,
+            'adjust_discount_tax' => 0,
+            'tax_mapping' => json_encode([1 => 7]),
+            'customer_group_mapping' => json_encode(['EK']),
+            'scheduled_date' => '0000-00-00 00:00:00',
+        ]);
+
+        $sql = file_get_contents(__DIR__ . '/_fixtures/plugin_data.sql');
+        $this->con->exec($sql);
+
+        static::assertTrue($this->taxUpdater->update(false));
+
+        $expectedBundleResult = [
+            [
+                'price' => '58.99842975206568',
+            ], [
+                'price' => '42.981308411215',
+            ],
+        ];
+
+        $expectedCustomProductsResult = require __DIR__ . '/_fixtures/expectedCustomProductPriceResult.php';
+
+        $sql = "SELECT price FROM s_articles_bundles_prices";
+        $bundleResult = $this->con->fetchAll($sql);
+
+        $sql = "SELECT * FROM s_plugin_custom_products_price";
+        $customProductsResult = $this->con->fetchAll($sql);
+
+        foreach ($expectedBundleResult as $index => $price) {
+            static::assertSame($price['price'], $bundleResult[$index]['price']);
+        }
+
+        foreach ($expectedCustomProductsResult as $index => $customProductPrice) {
+            static::assertSame($customProductPrice['id'], $customProductsResult[$index]['id']);
+            static::assertSame($customProductPrice['surcharge'], $customProductsResult[$index]['surcharge']);
+            static::assertSame($customProductPrice['tax_id'], $customProductsResult[$index]['tax_id']);
+        }
+    }
+
+    public function test_update_shouldCopyTaxRules()
+    {
+        $sql = "INSERT INTO `s_core_tax_rules`
+            (`id`, `areaID`, `countryID`, `stateID`, `groupID`, `customer_groupID`, `tax`, `name`, `active`)
+            VALUES (1, 1, 2, 3, 1, 1, '8.00', 'A', 1);";
+        $this->con->exec($sql);
+
+        $sql = 'INSERT INTO `s_core_tax` (`id`, `tax`, `description`)
+                VALUES (7, "10.00", "10 %");';
+
+        $this->con->exec($sql);
+
+        $this->con->insert(self::TABLE_NAME, [
+            'active' => 1,
+            'recalculate_prices' => 0,
+            'recalculate_pseudoprices' => 0,
+            'adjust_voucher_tax' => 0,
+            'adjust_discount_tax' => 0,
+            'tax_mapping' => json_encode([1 => 7]),
+            'copy_tax_rules' => 1,
+            'customer_group_mapping' => json_encode(['EK']),
+            'scheduled_date' => '0000-00-00 00:00:00',
+        ]);
+
+        static::assertTrue($this->taxUpdater->update(false));
+
+        $sql = "SELECT * FROM `s_core_tax_rules` WHERE groupID = 7";
+        $result = $this->con->fetchAssoc($sql);
+
+        $expectedResult = [
+            'id' => '2',
+            'areaID' => '1',
+            'countryID' => '2',
+            'stateID' => '3',
+            'groupID' => '7',
+            'customer_groupID' => '1',
+            'tax' => '8.00',
+            'name' => 'A',
+            'active' => '1',
+        ];
+
+        static::assertSame($expectedResult['areaID'], $result['areaID']);
+        static::assertSame($expectedResult['countryID'], $result['countryID']);
+        static::assertSame($expectedResult['stateID'], $result['stateID']);
+        static::assertSame($expectedResult['groupID'], $result['groupID']);
+        static::assertSame($expectedResult['customer_groupID'], $result['customer_groupID']);
+        static::assertSame($expectedResult['tax'], $result['tax']);
+        static::assertSame($expectedResult['name'], $result['name']);
+        static::assertSame($expectedResult['active'], $result['active']);
+    }
+
     private function getProductNumberWithTax()
     {
-        return $this->con->fetchAll('SELECT ordernumber, s_core_tax.tax, s_core_tax.id
-FROM s_articles_details
-INNER JOIN s_articles ON(s_articles.id = s_articles_details.articleID)
-INNER JOIN s_core_tax ON(s_core_tax.id = s_articles.taxID)
-WHERE s_articles.active = 1 AND s_articles_details.active = 1
-GROUP BY s_core_tax.tax');
+        return $this->con->fetchAll(
+            'SELECT ordernumber, s_core_tax.tax, s_core_tax.id
+            FROM s_articles_details
+            INNER JOIN s_articles ON(s_articles.id = s_articles_details.articleID)
+            INNER JOIN s_core_tax ON(s_core_tax.id = s_articles.taxID)
+            WHERE s_articles.active = 1 AND s_articles_details.active = 1
+            GROUP BY s_core_tax.tax'
+        );
     }
 }
