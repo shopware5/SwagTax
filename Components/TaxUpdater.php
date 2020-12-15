@@ -162,29 +162,15 @@ class TaxUpdater
             ->where('prices.pricegroup IN (:groups)')
             ->andWhere('(SELECT taxID FROM s_articles WHERE id = prices.articleID) = :newTaxID');
 
-        if ($column === self::PRICE_COLUMN) {
-            $queryBuilder->set(
+        $queryBuilder->set(
+            $column,
+            sprintf(
+                '%s/%s*%s',
                 $column,
-                sprintf(
-                    '%s/%s*%s',
-                    $column,
-                    1 + ($taxMapping->getNewTaxRate() / 100),
-                    1 + ($taxMapping->getOldTaxRate() / 100)
-                )
-            );
-        }
-
-        if ($column === self::PSEUDOPRICE_COLUMN) {
-            $queryBuilder->set(
-                $column,
-                sprintf(
-                    '%s/%s*%s',
-                    $column,
-                    1 + ($taxMapping->getOldTaxRate() / 100),
-                    1 + ($taxMapping->getNewTaxRate() / 100)
-                )
-            );
-        }
+                1 + ($taxMapping->getNewTaxRate() / 100),
+                1 + ($taxMapping->getOldTaxRate() / 100)
+            )
+        );
 
         $queryBuilder->setParameter(':groups', $config->getCustomerGroupMapping(), Connection::PARAM_STR_ARRAY);
         $queryBuilder->setParameter(':newTaxID', $taxMapping->getNewTaxRateId());

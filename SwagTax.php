@@ -43,7 +43,7 @@ class SwagTax extends Plugin
 
     public function update(UpdateContext $context)
     {
-        if (version_compare($context->getCurrentVersion(), 'REPLACE_GLOBAL_WITH_NEXT_VERSION', '<')) {
+        if (version_compare($context->getCurrentVersion(), '2.0.1', '<')) {
             $connection = $this->container->get('dbal_connection');
 
             $sql = 'ALTER TABLE `swag_tax_config` ADD `recalculate_pseudoprices` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_prices`';
