@@ -89,8 +89,16 @@ SQL;
      */
     private function getTaxParams(array $params)
     {
-        $taxDescription = \trim($params['name'] ?? '');
-        $taxRate = (float) \trim($params['taxRate'] ?? '');
+        if (!isset($params['name'])) {
+            $params['name'] = '';
+        }
+
+        if (!isset($params['taxRate'])) {
+            $params['taxRate'] = '';
+        }
+
+        $taxDescription = \trim($params['name']);
+        $taxRate = (float) \trim($params['taxRate']);
 
         if ($taxDescription === '' || $taxRate === 0.0) {
             return null;

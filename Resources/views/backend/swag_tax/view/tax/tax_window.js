@@ -35,7 +35,6 @@ Ext.define('Shopware.apps.SwagTax.view.tax.TaxWindow', {
     initComponent: function() {
         if (this.taxSelectSearchField === null) {
             throw 'The property taxSelectSearchField is not set.'
-            return;
         }
 
         this.items = this.createItems();
