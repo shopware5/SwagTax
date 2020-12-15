@@ -151,7 +151,7 @@ class TaxUpdaterTest extends TestCase
         $resultSql = 'SELECT `pseudoprice` FROM `s_articles_prices` WHERE `id` = 473;';
         $result = (float) $this->con->fetchColumn($resultSql);
 
-        $expectedPseudoPrice = 23.303439022667483;
+        $expectedPseudoPrice = 27.272727272726787;
 
         static::assertSame($expectedPseudoPrice, $result);
     }
