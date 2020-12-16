@@ -24,6 +24,8 @@ class SwagTax extends Plugin
 
     public function install(InstallContext $context)
     {
+
+
         $this->container->get('dbal_connection')->executeQuery('CREATE TABLE `swag_tax_config` (
   `active` tinyint(1) NOT NULL,
   `recalculate_prices` tinyint(1) NOT NULL,
@@ -46,17 +48,25 @@ class SwagTax extends Plugin
         if (version_compare($context->getCurrentVersion(), '2.0.1', '<')) {
             $connection = $this->container->get('dbal_connection');
 
-            $sql = 'ALTER TABLE `swag_tax_config` ADD `recalculate_pseudoprices` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_prices`';
-            $connection->executeQuery($sql);
+            if ($this->databaseColumnExists('recalculate_pseudoprices') === false) {
+                $sql = 'ALTER TABLE `swag_tax_config` ADD `recalculate_pseudoprices` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_prices`';
+                $connection->executeQuery($sql);
+            }
 
-            $sql = 'ALTER TABLE `swag_tax_config` ADD `adjust_voucher_tax` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_pseudoprices`';
-            $connection->executeQuery($sql);
+            if ($this->databaseColumnExists('adjust_voucher_tax') === false) {
+                $sql = 'ALTER TABLE `swag_tax_config` ADD `adjust_voucher_tax` TINYINT(1) NOT NULL DEFAULT "0" AFTER `recalculate_pseudoprices`';
+                $connection->executeQuery($sql);
+            }
 
-            $sql = 'ALTER TABLE `swag_tax_config` ADD `adjust_discount_tax` TINYINT(1) NOT NULL DEFAULT "0" AFTER `adjust_voucher_tax`';
-            $connection->executeQuery($sql);
+            if ($this->databaseColumnExists('adjust_discount_tax') === false) {
+                $sql = 'ALTER TABLE `swag_tax_config` ADD `adjust_discount_tax` TINYINT(1) NOT NULL DEFAULT "0" AFTER `adjust_voucher_tax`';
+                $connection->executeQuery($sql);
+            }
 
-            $sql = 'ALTER TABLE `swag_tax_config` ADD `copy_tax_rules` TINYINT(1) NOT NULL DEFAULT "0" AFTER `tax_mapping`';
-            $connection->executeQuery($sql);
+            if ($this->databaseColumnExists('copy_tax_rules') === false) {
+                $sql = 'ALTER TABLE `swag_tax_config` ADD `copy_tax_rules` TINYINT(1) NOT NULL DEFAULT "0" AFTER `tax_mapping`';
+                $connection->executeQuery($sql);
+            }
         }
     }
 
@@ -107,5 +117,19 @@ class SwagTax extends Plugin
     public function registerSwagTaxController(\Enlight_Event_EventArgs $args)
     {
         return $this->getPath() . '/Controllers/Backend/SwagTax.php';
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return bool
+     */
+    private function databaseColumnExists($column)
+    {
+        $sql = \sprintf('SHOW COLUMNS FROM `swag_tax_config` LIKE "%s";', $column);
+
+        $result = $this->container->get('dbal_connection')->fetchAssoc($sql);
+
+        return \is_array($result);
     }
 }

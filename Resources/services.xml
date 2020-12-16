@@ -5,50 +5,53 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults public="true"/>
-
-        <service id="SwagTax\Components\TaxUpdater" class="SwagTax\Components\TaxUpdater">
+        <service id="SwagTax\Components\TaxUpdater" class="SwagTax\Components\TaxUpdater" public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="events"/>
             <argument type="service" id="SwagTax\Components\ShopConfigUpdater"/>
             <argument type="service" id="SwagTax\Components\ThirdPlugins\ThirdPluginUpdater"/>
         </service>
 
-        <service id="SwagTax\Components\ShopConfigUpdater" class="SwagTax\Components\ShopConfigUpdater">
+        <service id="SwagTax\Components\ShopConfigUpdater" class="SwagTax\Components\ShopConfigUpdater" public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="config"/>
             <argument type="service" id="models"/>
         </service>
 
-        <service id="SwagTax\Subscriber\CronJobSubscriber" class="SwagTax\Subscriber\CronJobSubscriber">
+        <service id="SwagTax\Subscriber\CronJobSubscriber" class="SwagTax\Subscriber\CronJobSubscriber" public="true">
             <argument type="service" id="SwagTax\Components\TaxUpdater"/>
             <argument type="service" id="shopware.cache_manager"/>
             <tag name="shopware.event_subscriber"/>
         </service>
 
         <service id="SwagTax\Subscriber\BasicSettingsTaxSubscriber"
-                 class="SwagTax\Subscriber\BasicSettingsTaxSubscriber">
+                 class="SwagTax\Subscriber\BasicSettingsTaxSubscriber"
+                 public="true">
             <tag name="shopware.event_subscriber"/>
         </service>
 
         <service id="SwagTax\Components\ThirdPlugins\ThirdPluginUpdater"
-                 class="SwagTax\Components\ThirdPlugins\ThirdPluginUpdater">
+                 class="SwagTax\Components\ThirdPlugins\ThirdPluginUpdater"
+                 public="true">
             <argument type="service" id="SwagTax\Components\ThirdPlugins\ThirdPluginHandlerFactory"/>
         </service>
 
         <service id="SwagTax\Components\ThirdPlugins\ThirdPluginHandlerFactory"
-                 class="SwagTax\Components\ThirdPlugins\ThirdPluginHandlerFactory">
+                 class="SwagTax\Components\ThirdPlugins\ThirdPluginHandlerFactory"
+                 public="true">
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="events"/>
         </service>
 
         <service id="SwagTax\Components\ThirdPlugins\SwagBundleHandler"
-                 class="SwagTax\Components\ThirdPlugins\SwagBundleHandler">
+                 class="SwagTax\Components\ThirdPlugins\SwagBundleHandler"
+                 public="true">
             <argument type="service" id="dbal_connection"/>
         </service>
 
         <service id="SwagTax\Components\ThirdPlugins\SwagCustomProductsHandler"
-                 class="SwagTax\Components\ThirdPlugins\SwagCustomProductsHandler">
+                 class="SwagTax\Components\ThirdPlugins\SwagCustomProductsHandler"
+                 public="true">
             <argument type="service" id="dbal_connection"/>
         </service>
     </services>
