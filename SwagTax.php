@@ -24,20 +24,19 @@ class SwagTax extends Plugin
 
     public function install(InstallContext $context)
     {
-
-
-        $this->container->get('dbal_connection')->executeQuery('CREATE TABLE `swag_tax_config` (
-  `active` tinyint(1) NOT NULL,
-  `recalculate_prices` tinyint(1) NOT NULL,
-  `recalculate_pseudoprices` tinyint(1) NOT NULL DEFAULT "0",
-  `adjust_voucher_tax` tinyint(1) NOT NULL DEFAULT "0",
-  `adjust_discount_tax` tinyint(1) NOT NULL DEFAULT "0",
-  `tax_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `copy_tax_rules` tinyint(1) NOT NULL DEFAULT "0",
-  `customer_group_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `scheduled_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-');
+        $this->container->get('dbal_connection')->executeQuery('
+            CREATE TABLE `swag_tax_config` (
+              `active` tinyint(1) NOT NULL,
+              `recalculate_prices` tinyint(1) NOT NULL,
+              `recalculate_pseudoprices` tinyint(1) NOT NULL DEFAULT "0",
+              `adjust_voucher_tax` tinyint(1) NOT NULL DEFAULT "0",
+              `adjust_discount_tax` tinyint(1) NOT NULL DEFAULT "0",
+              `tax_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
+              `copy_tax_rules` tinyint(1) NOT NULL DEFAULT "0",
+              `customer_group_mapping` longtext COLLATE utf8_unicode_ci NOT NULL,
+              `scheduled_date` datetime DEFAULT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        ');
 
         $this->addCron();
         $this->container->get('acl')->createResource('swagtax', ['read']);
