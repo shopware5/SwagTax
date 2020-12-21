@@ -79,6 +79,55 @@ class SwagTaxTest extends TestCase
         static::assertSame('33 %', $savedTaxResult['description']);
     }
 
+    public function test_checkCronDate_shouldReturnEmptyDate()
+    {
+        $controller = $this->getController();
+        $emptyDate = '0000-00-00 00:00:00';
+
+        $reflectionMethod = (new \ReflectionClass(\Shopware_Controllers_Backend_SwagTax::class))->getMethod('checkCronDate');
+        $reflectionMethod->setAccessible(true);
+
+        $result = $reflectionMethod->invoke($controller, null);
+        static::assertSame($emptyDate, $result);
+
+        $result = $reflectionMethod->invoke($controller, '');
+        static::assertSame($emptyDate, $result);
+
+        $result = $reflectionMethod->invoke($controller, '0');
+        static::assertSame($emptyDate, $result);
+
+        $result = $reflectionMethod->invoke($controller, '0000-00-00 00:00:00');
+        static::assertSame($emptyDate, $result);
+
+        $result = $reflectionMethod->invoke($controller, '2020-01-01 00:00:00');
+        static::assertSame($emptyDate, $result);
+
+        $result = $reflectionMethod->invoke($controller, '2020-01-01 00:00:00');
+        static::assertSame($emptyDate, $result);
+
+        $now = date('Y-m-d H:i:s');
+        $past = date('Y-m-d H:i:s', strtotime('-1 hour', strtotime($now)));
+        $result = $reflectionMethod->invoke($controller, $past);
+        static::assertSame($emptyDate, $result);
+    }
+
+    public function test_checkCronDate_shouldReturnGivenDate()
+    {
+        $controller = $this->getController();
+
+        $reflectionMethod = (new \ReflectionClass(\Shopware_Controllers_Backend_SwagTax::class))->getMethod('checkCronDate');
+        $reflectionMethod->setAccessible(true);
+
+        $future = '2222-02-02 20:20:20';
+        $result = $reflectionMethod->invoke($controller, $future);
+        static::assertSame($future, $result);
+
+        $now = date('Y-m-d H:i:s');
+        $future = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($now)));
+        $result = $reflectionMethod->invoke($controller, $future);
+        static::assertSame($future, $result);
+    }
+
     private function getController()
     {
         $controller = new \Shopware_Controllers_Backend_SwagTax();

@@ -5,7 +5,7 @@
     <label lang="de">Steuern ändern</label>
     <label lang="en">Change taxes</label>
 
-    <version>2.0.2</version>
+    <version>2.0.3</version>
     <copyright>(c) by shopware AG</copyright>
     <license>mit</license>
     <link>http://store.shopware.com</link>
@@ -15,6 +15,11 @@
     <description lang="de">Befristete MwSt.-Senkung vom 01. Juli bis zum 31. Dezember wird die MwSt. in Deutschland von 19 auf 16 sowie von 7 auf 5 % gesenkt.</description>
 
     <compatibility minVersion="5.2.0"/>
+
+    <changelog version="2.0.3">
+        <changes lang="en">PT-12211 - Check cron time while saving;</changes>
+        <changes lang="de">PT-12211 - Überprüft die Cron-Zeit beim Speichern;</changes>
+    </changelog>
 
     <changelog version="2.0.2">
         <changes lang="en">PT-12211 - Fixed Shopware 5.2 compatibility;</changes>

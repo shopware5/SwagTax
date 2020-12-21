@@ -26,7 +26,7 @@ class Shopware_Controllers_Backend_SwagTax extends Shopware_Controllers_Backend_
             'tax_mapping' => $params['taxMapping'],
             'copy_tax_rules' => (bool) $params['copyTaxRules'],
             'customer_group_mapping' => $params['customerGroupMapping'],
-            'scheduled_date' => $this->Request()->getParam('scheduledDate'),
+            'scheduled_date' => $this->checkCronDate($params['scheduledDate']),
         ]);
     }
 
@@ -113,5 +113,27 @@ SQL;
     private function clearTable()
     {
         $this->container->get('dbal_connection')->executeQuery(sprintf('TRUNCATE TABLE %s', self::TABLE_NAME));
+    }
+
+    /**
+     * @param string $scheduledDate
+     *
+     * @return string
+     */
+    private function checkCronDate($scheduledDate)
+    {
+        $emptyDate = '0000-00-00 00:00:00';
+        if ($scheduledDate === '' || empty($scheduledDate)) {
+            return $emptyDate;
+        }
+
+        $scheduledDateTime = new \DateTime($scheduledDate);
+        $nowDateTime = new \DateTime('NOW');
+
+        if ($scheduledDateTime > $nowDateTime) {
+            return $scheduledDate;
+        }
+
+        return $emptyDate;
     }
 }
