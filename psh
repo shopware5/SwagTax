@@ -1,1 +1,2 @@
-vendor/shopware/plugin-dev-tools/psh.phar
+#!/usr/bin/env sh
+./vendor/shopware/plugin-dev-tools/psh.phar "$@"
