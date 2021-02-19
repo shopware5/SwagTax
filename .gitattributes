@@ -1,0 +1,10 @@
+.gitattributes export-ignore
+.github/ export-ignore
+Tests/ export-ignore
+.gitignore export-ignore
+.make.env export-ignore
+.php_cs.dist export-ignore
+.psh.yml.dist export-ignore
+before_install_plugin.sh export-ignore
+phpunit.xml export-ignore
+psh export-ignore
